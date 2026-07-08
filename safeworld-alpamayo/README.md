@@ -23,6 +23,22 @@ PYTHONPATH=src python -m safeworld.eval.open_loop_eval --config configs/eval_ope
 
 Generated reports are written under `outputs/reports/`.
 
+## Optional: AlpaSim (for real rollouts / closed-loop simulation)
+
+The dry run above only needs synthetic/sample data. Real rollouts and
+closed-loop simulation (`rollout_backend="alpasim"`,
+`use_alpasim_if_available`) depend on [NVlabs/alpasim](https://github.com/NVlabs/alpasim),
+which is a separate project and is **not** vendored in this repo
+(`external/` is gitignored). To use it:
+
+```bash
+git clone https://github.com/NVlabs/alpasim.git ../external/alpasim
+```
+
+adjusting the destination path to match whatever `external/alpasim` path
+your configs/scripts expect. See AlpaSim's own README for its setup and
+licensing requirements.
+
 ## Logging
 
 Task attempts and completion summaries are recorded only in this project root:
