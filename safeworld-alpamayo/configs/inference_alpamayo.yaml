@@ -1,0 +1,23 @@
+model:
+  name: nvidia/Alpamayo-1.5-10B
+  version: 1.5-10B
+  attn_implementation: sdpa
+  dtype: bfloat16
+run:
+  seed: 7
+  dry_run: true
+  limit: 12
+topk:
+  enabled: true
+  k_values: [1, 2, 5, 10]
+  default_k: 10
+  use_real_alpamayo: false
+  dry_run: true
+inputs:
+  index_path: outputs/index/sample_index_mined.jsonl
+outputs:
+  proposal_path: outputs/proposals/alpamayo_sample.jsonl
+  e0_report_path: outputs/reports/e0_reproduction.md
+  topk_proposal_path_template: outputs/proposals/alpamayo_topk_k{k}.jsonl
+  topk_report_path_template: outputs/reports/topk_inference_k{k}.md
+

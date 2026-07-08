@@ -1,0 +1,14 @@
+dataset:
+  name: nvidia/PhysicalAI-Autonomous-Vehicles
+  nurec_name: nvidia/PhysicalAI-Autonomous-Vehicles-NuRec
+  data_root: data/physicalai_av
+  use_synthetic_when_missing: true
+run:
+  seed: 7
+  limit: 12
+  dry_run: true
+outputs:
+  index_path: outputs/index/sample_index.jsonl
+  mined_index_path: outputs/index/sample_index_mined.jsonl
+  scenario_counts_path: outputs/index/scenario_counts.json
+  split_summary_path: outputs/index/split_summary.json

@@ -1,0 +1,2 @@
+"""Alpamayo frozen proposal wrapper."""
+

@@ -1,0 +1,20 @@
+run:
+  seed: 7
+  limit: 64
+topk:
+  default_k: 10
+inputs:
+  index_path: outputs/index/sample_index_mined.jsonl
+  proposal_path: outputs/proposals/alpamayo_sample.jsonl
+  topk_proposal_path_template: outputs/proposals/alpamayo_topk_k{k}.jsonl
+outputs:
+  target_path: outputs/world_targets/sample_targets.jsonl
+  topk_target_path_template: outputs/world_targets/topk_targets_k{k}.jsonl
+  model_path: outputs/models/world_model_v1.json
+  e3_report_path: outputs/reports/e3_world_model_v1.md
+model:
+  learning_rate: 0.08
+  epochs: 250
+  l2: 0.001
+  validation_fraction: 0.25
+

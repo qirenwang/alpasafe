@@ -1,0 +1,12 @@
+run:
+  seed: 7
+  dry_run: true
+inputs:
+  index_path: outputs/index/sample_index_mined.jsonl
+  proposal_path: outputs/proposals/alpamayo_sample.jsonl
+outputs:
+  report_path: outputs/reports/e5_closed_loop_or_replay_gate.md
+simulator:
+  use_alpasim_if_available: false
+  fallback: offline_replay
+

@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# Data
+data/
+docs/
+researchs/
+
 # Distribution / packaging
 .Python
 build/
@@ -214,3 +219,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Project-specific (alpasafe) ---
+# External projects cloned separately (e.g. NVlabs/alpasim, ~76G). Not part of this repo.
+external/
+
+# SafeWorld experiment outputs & artifacts: large, machine-specific run data/logs.
+safeworld-alpamayo/outputs/
+safeworld-alpamayo/artifacts/
+
+# Local tooling / agent config (not source code)
+.claude/
+.agents/
+.codex

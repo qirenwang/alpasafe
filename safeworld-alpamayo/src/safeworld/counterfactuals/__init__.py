@@ -1,0 +1,2 @@
+"""Counterfactual candidate trajectory generation."""
+

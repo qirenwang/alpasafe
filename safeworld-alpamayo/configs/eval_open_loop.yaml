@@ -1,0 +1,31 @@
+run:
+  seed: 7
+topk:
+  default_k: 10
+inputs:
+  index_path: outputs/index/sample_index_mined.jsonl
+  proposal_path: outputs/proposals/alpamayo_sample.jsonl
+  target_path: outputs/world_targets/sample_targets.jsonl
+  topk_proposal_path_template: outputs/proposals/alpamayo_topk_k{k}.jsonl
+  topk_target_path_template: outputs/world_targets/topk_targets_k{k}.jsonl
+  model_path: outputs/models/world_model_v1.json
+outputs:
+  e1_report_path: outputs/reports/e1_open_loop_safety.md
+  e2_report_path: outputs/reports/e2_rawc.md
+  e4_report_path: outputs/reports/e4_counterfactuals.md
+  e6_report_path: outputs/reports/e6_long_tail.md
+  topk_selection_log_template: outputs/topk/selection_log_k{k}.jsonl
+  topk_report_template: outputs/reports/topk_selection_k{k}.md
+gate:
+  risk_threshold: 0.45
+  margin_threshold: 0.0
+  rawc_threshold: 0.65
+selection:
+  risk_threshold: 0.45
+  lambda_progress: 0.01
+  beta_comfort: 0.05
+  gamma_uncertainty: 0.10
+  rawc_threshold: 0.65
+  fallback_candidate: fallback_stop
+  random_seed: 7
+
