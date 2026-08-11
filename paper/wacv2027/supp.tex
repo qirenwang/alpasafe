@@ -1,0 +1,126 @@
+% Supplementary material — compiled as a separate PDF (WACV convention).
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage[review,applications]{wacv}
+\input{preamble}
+\definecolor{wacvblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=wacvblue]{hyperref}
+\usepackage[capitalize]{cleveref}
+\def\wacvPaperID{*****}
+\def\confName{WACV}
+\def\confYear{2027}
+\newif\iffnonedone \fnonedonefalse
+\newif\iffnonepass \fnonepassfalse
+\input{sec/numbers}
+
+\title{One Token Is Enough: Trajectory Selection from a Frozen Driving VLA's Prefill State\\ --- Supplementary Material ---}
+\author{Anonymous WACV submission\\ Paper ID \wacvPaperID}
+
+\begin{document}
+\maketitle
+\appendix
+
+\section{The ten promotion gates}
+\label{supp:gates}
+
+The powered incumbent study promotes only if \emph{all} gates pass; every rule, margin, and constant below was frozen and hash-registered before any extension scene was scored.
+Margins are inherited unchanged from earlier frozen stage contracts (materiality: 0.013 regret / 0.046 top-1; pairwise non-inferiority margin 0.010; regret-concession bound $+0.005$), re-read from their registered files rather than restated by hand.
+
+\begin{table}[h]
+  \centering
+  \small
+  \begin{tabular}{@{}p{0.08\linewidth}p{0.84\linewidth}@{}}
+    \toprule
+    Gate & Frozen rule (abbreviated) \\
+    \midrule
+    G1 & N1 regret delta $<0$ AND 95\% CI high $<0$ (superiority on the promoting endpoint). \\
+    G2 & N1 top-1 point delta $\ge -0.013$ AND CI low $>-0.046$ (non-inferiority; the point-clause margin reuses the frozen regret-materiality constant). \\
+    G3 & N1 pairwise-accuracy CI low $>-0.010$. \\
+    G4 & N2 (vs.\ scene-blind): regret CI high $<0$ AND top-1 CI low $>0$ (scene value must replicate at scale). \\
+    G5 & If the selector-objective arm is nominated: N3 top-1 CI low $>0$ AND N3 regret CI high $<+0.005$ (buy top-1 without selling regret); vacuous otherwise. \\
+    G6 & \textsc{wrong-scene} and \textsc{zero} ablations each worsen $\ge1$ primary endpoint in the preregistered direction, no contradictory material improvement (0.013/0.046). \\
+    G7 & No material reversal across $K{=}2/5/8$ on either primary. \\
+    G8 & No seed material reversal; no fold systematically opposed; leave-one-scene-out stays favorable; no single scene contributes $>$half the effect; N1/N2 directions hold in the untouched-extension subset alone. \\
+    G9 & Budget: params $\le$ \EffCeilParams; median/p95 incremental K8 latency $\le$ \EffCeilMedianMs/\EffCeilTailMs\,ms; peak incremental inference memory $\le$ \EffCeilMemGb\,GiB; GPU preflight passes at run time. \\
+    G10 & Integrity: 60/60 runs, outer-fold isolation, prediction lock before endpoints, all joins/hashes verified, no reserve/sealed access, all manifests re-read. \\
+    \bottomrule
+  \end{tabular}
+  \caption{Promotion gates for the powered incumbent study. \iffnonedone\todo{add the per-gate outcome column from the FN1 record}\else Outcomes pending (study in flight).\fi}
+  \label{tab:gates}
+\end{table}
+
+\section{Selector-loss resolution}
+\label{supp:selloss}
+
+Two candidate top-of-list objectives were resolved by a preregistered 12-criterion analysis with \emph{no} real-model outcome comparison permitted.
+
+\paragraph{Candidate A (rejected): expected regret of a softmax policy.}
+$L_A=\sum_j q_j r_j$, $q=\mathrm{softmax}(s/\tau)$, $r_j = y_{\max}-y_j$.
+Exact in the $\tau\to0$ limit, but
+$\partial L_A/\partial s_j = \tfrac{1}{\tau}\,q_j\,(r_j - \textstyle\sum_k q_k r_k)$:
+as $q$ collapses onto any single candidate---including a \emph{wrong} one---every component tends to zero.
+The gradient vanishes exactly in the failure mode the objective exists to repair (a confidently wrong selector).
+In the residual-spread regime the development runs actually produce (within-group spread median $0.112$, i.e.\ spread$/\tau$ of $2.6$--$10.1$, up to $31$ at the residual bound $2S$), candidate A retains as little as $3.9\%$ of its small-spread gradient magnitude.
+
+\paragraph{Candidate B (selected): regret-weighted best-vs-rest logistic (Eq.~(2) of the main paper).}
+Bounded per-candidate gradient ($|\partial L/\partial s|\le 1/(2\tau)$ after normalization) that \emph{saturates at its maximum} when the selector is confidently wrong; simultaneously a surrogate for the co-primary top-1 endpoint, since the argmax is correct iff every best-vs-rest margin is positive, each weighted by the regret that mistake would cost.
+Tied-best candidates form no pairs among themselves, so no arbitrary tie-breaking enters the loss.
+
+\paragraph{Mechanical scalars.}
+$\tau=\SelTau$: the 0.001-ceiled median positive oracle-best-to-candidate official-score gap over frozen training targets (raw value $0.0430$).
+Coefficient $=\SelCoef$: matches the RMS per-candidate gradient $\partial L/\partial s$ of the replaced ranking term at equal selector scores (measured ratio stable across batches, $0.024$--$0.045$); the shared-trunk gradient could not define this coefficient because the residual head is zero-initialized, making the trunk ratio $0/0$ at initialization.
+The replacement is a replacement, not an addition: both losses share the $w\cdot\mathrm{softplus}(-\text{margin}/\text{scale})$ family and pooling, so a single scalar commensurates them; sweeps, annealing, and outcome-based tuning were contractually forbidden.
+The preregistration conformance suite reproduces the decisive geometry synthetically: at a confidently-wrong operating point the rejected objective's gradient norm is \SelGradVanish{} while the frozen objective holds \SelGradSat.
+
+\section{Negative-results timeline}
+\label{supp:negatives}
+
+The path to the last-token result consumed several attractive hypotheses; we record them because each closed a design branch other groups may be tempted to reopen.
+\todo{re-pull the exact figures below from the registered stage records for camera-ready; flagged values are from stage summaries}
+
+\begin{itemize}
+  \item \textbf{Compressed sequence summaries fail.} A learned compression of the prefill sequence showed \emph{negative} content value: zeroing the compressed features \emph{helped} (content contribution $\approx-0.032$), refuting the compressed-representation route with CI support and redirecting the program to the raw states.
+  \item \textbf{The pooled vector is mostly a group-level offset.} $98.2\%$ of the pooled representation's linear effect on scores was a per-group offset, not candidate discrimination---motivating the decomposed head (Eq.~(1) of the main paper), which routes group-level information to $\hat m_g$ and excludes it from selection.
+  \item \textbf{Rank/centered gradient conflict.} Unbounded residuals produced cosine conflict ($-0.22$ to $-0.41$) between ranking and centered-regression gradients; the bounded residual repaired alignment ($+0.02$ to $+0.34$, spread $-48\%$) while remaining endpoint-neutral---a mechanism repair, not a headline gain, retained for its side effects on trainability.
+  \item \textbf{Replay is not bit-exact.} Recomputing representations by replaying stored inputs diverged at one bf16 ULP in a minority of anchors---enough to break provenance. This killed every retroactive-capture design and forced the prospective same-prefill capture contract: representations are stored at generation time or not used at all.
+  \item \textbf{Retroactive recovery is impossible in practice.} For an earlier 366-group cohort, full input closure (frame indices, ego poses, verification hashes) could not be reconstructed from any surviving artifact---sweeping 1{,}068 stored logs recovered none---which is why the cohort ladder persists input closure from the start.
+\end{itemize}
+
+\section{Provenance registry}
+\label{supp:registry}
+
+Every stage is a hash-registered record: preregistration documents, frozen contracts (arms, endpoints, gates, donor mappings, tie semantics), locked predictions, analysis code hash, and analyzer outputs.
+\Cref{tab:registry} lists the registered digests for the confirmatory stages.
+\todo{fill full digests from the stage manifests; truncated values here are placeholders from the working registry}
+
+\begin{table}[h]
+  \centering
+  \small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Stage & Registered artifact & Digest (SHA-256, trunc.) \\
+    \midrule
+    Matched-visibility study & execution prompt & \texttt{6c99cc42\ldots} \\
+    Extension acquisition & execution prompt & \texttt{4e85dd70\ldots} \\
+    Powered incumbent study & execution prompt & \texttt{7a3216db\ldots} \\
+    Analysis determinism & GPU fixture & \texttt{46e55e21\ldots} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Preregistration registry (abridged). \todo{expand with contract-level digests and record timestamps}}
+  \label{tab:registry}
+\end{table}
+
+\section{Additional endpoints}
+\label{supp:endpoints}
+
+\paragraph{Secondary $K$ subsets.}
+M3 (\Ltok$-$\Lnull) regret at $K{=}5$: \MThreeKFiveRegretCI; at $K{=}2$: \MThreeKTwoRegretCI{} (top-1 values in the main text).
+M1 (\Lfull$-$\Ltok) regret at $K{=}5$: \MOneKFiveRegretCI; at $K{=}2$: \MOneKTwoRegretCI.
+
+\paragraph{Auxiliary-head deltas (\Lfull$-$\Ltok).}
+ADE \AuxAdeCI{} (worse), FDE \AuxFdeCI{} (better), collision AUROC \AuxCollisionCI{} (worse; $n=\AuxCollisionNScenes$ scenes with defined labels), progress MAE \AuxProgressCI.
+The split pattern is discussed in Sec.~5.2 of the main paper.
+
+\paragraph{Absolute auxiliary quality (deployed arm).}
+The last-token arm's collision head reaches \AbsLasttokenCollisionAuroc{} AUROC vs.\ \AbsLegacyCollisionAuroc{} for the geometry incumbent---consequence information the geometry-only input simply does not carry; its future-trajectory ADE is \AbsLasttokenAde{} vs.\ \AbsLegacyAde.
+
+\end{document}

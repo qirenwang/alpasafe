@@ -1,0 +1,64 @@
+\section{Experimental Program}
+\label{sec:program}
+
+We treat the evaluation design itself as a contribution: selector effects on strong generators are small, and without preregistration and cohort discipline they are easy to manufacture.
+This section fixes the vocabulary used in \cref{sec:results}.
+
+\paragraph{Cohort ladder.}
+Scenes advance through four rungs (\cref{tab:ladder}).
+Development scenes absorbed all architecture and objective design, including every repair and failed branch.
+The \emph{prospective untouched} cohort (\nScenes{} scenes, \nGroups{} groups, \nScoresTotal{} candidate scores) was frozen outcome-blind---captured, hashed, and quarantined before any model consumed it---and first opened by the confirmatory matched-visibility study of \cref{sec:res-signal,sec:res-onetoken}.
+The \emph{extension} cohort (+\FnNNew{} scenes target) exists solely to power the incumbent study of \cref{sec:res-incumbent}.
+A \emph{sealed} 35-scene cohort is never opened until a winner is frozen; it exists to confirm a promoted selector once, or to stay sealed.
+
+\begin{table}[t]
+  \centering
+  \small
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Rung & Scenes & Role & Status \\
+    \midrule
+    Development & 122 & design, repairs & opened freely \\
+    Prospective & \nScenes{} & confirmatory M-study & frozen, used once \\
+    Extension & +\FnNNew{} & powered N-study & \iffnonedone consumed \else in acquisition \fi \\
+    Sealed & 35 & one-shot confirmation & never opened \\
+    \bottomrule
+  \end{tabular}
+  \caption{\textbf{Cohort ladder.} Each rung is hash-frozen before use; registered preregistration digests for each stage are listed in the supplement.}
+  \label{tab:ladder}
+\end{table}
+
+\paragraph{Endpoints.}
+Selected regret and tie-aware top-1 agreement at $K{=}8$ (co-primary; $K{=}2/5$ secondary, first-$k$ subsets in the frozen candidate order) as defined in \cref{sec:setting}.
+Selected regret is exactly the slack that minADE@$K$-style reporting hides: the gap between the best available candidate's outcome and the outcome of the candidate the deployed rule picks.
+Reporting both endpoints matters because they can disagree---a selector can pick near-best candidates reliably (low regret) while losing exact-best agreement, and vice versa; we will see precisely this tension in \cref{sec:res-incumbent}.
+
+\paragraph{Arms.}
+Four selectors, identical labels and folds:
+\Ltok{} reads the last prefill token $h$;
+\Lfull{} reads the full sequence $H$ (parameter-matched to \Ltok, interchangeable state dicts);
+\Lnull{} is the matched scene-blind control---the scene input is a single zero token (no learned null embedding), so the arm retains the identical graph and capacity but no scene information;
+\Lgeo{} is the trained incumbent: a trajectory-geometry-only MLP ($\sim$202k parameters, its own frozen historical objective) that sees no VLA representation at all.
+The confirmatory matched-visibility study compares
+M1 $=$ \Lfull$-$\Ltok,
+M2 $=$ \Lfull$-$\Lnull,
+M3 $=$ \Ltok$-$\Lnull,
+M4 $=$ \Lfull$-$\Lgeo,
+M5 $=$ \Ltok$-$\Lgeo{}
+(paired per scene, 3 seeds each).
+
+\paragraph{Causal ablations.}
+On the representation-reading arm, at inference time and with the training entirely untouched:
+\textsc{wrong-scene} substitutes the representation of a different scene under a preregistered donor mapping;
+\textsc{zero} zeroes the representation;
+a \textsc{last-token-only} diagnostic feeds the \Lfull{} reader just the final row.
+If the selection signal genuinely lives in the scene representation's \emph{content}, the first two must degrade selection; if the \Lfull{} reader actually consumes the sequence, the third must degrade \emph{it}.
+
+\paragraph{The powered incumbent study.}
+The matched-visibility study leaves \Ltok{} vs.\ \Lgeo{} unresolved at $N{=}\nScenes$ (\cref{sec:res-incumbent}); its point effect defines the minimum detectable effect for a follow-up sized \emph{before} outcomes: MDE $=\FnMde$ regret (the locked M5 point estimate, recomputed bit-exactly from locked predictions), paired scene SD $\FnSdPaired$, two-sided $\alpha=0.05$, $1-\beta=0.80$ $\Rightarrow$ $N=\FnNTotal$ analysis scenes ($\FnNExisting$ existing $+$ \FnNNewPreAttrition{} new, acquired as \FnNNew{} with a 20\% attrition allowance; achieved power \FnPowerAchieved; top-1 MDE \FnTopOneMde).
+Four arms are preregistered---\Ltok{} under the checkpoint objective and under the selector objective (\cref{sec:objectives}), \Lnull, and \Lgeo---with a frozen selector-first nomination rule and comparison graph
+N1 $=$ nominated$-$\Lgeo{} (promotion),
+N2 $=$ nominated$-$\Lnull{} (M3 replication at scale),
+N3 $=$ selector$-$checkpoint objective (the controlled selector-loss contrast),
+N4 $=$ checkpoint$-$\Lgeo{} (always reported).
+Promotion requires ten frozen gates (regret superiority with CI support, top-1 and pairwise non-inferiority at frozen margins, causal-ablation behavior, $K$-consistency, seed/fold/leave-one-scene-out robustness including consistency on the untouched extension subset alone, deployment budget, and integrity checks); the full gate table with margins is in the supplement.

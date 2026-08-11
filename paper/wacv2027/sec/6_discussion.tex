@@ -1,0 +1,23 @@
+\section{Discussion and Limitations}
+\label{sec:discussion}
+
+\paragraph{Internal benchmark, by choice.}
+All results are measured in \simname{} against its official closed-loop score; they are not comparable to NavSim, nuPlan, or Bench2Drive leaderboards~\cite{dauner2024navsim,caesar2021nuplan,jia2024bench2drive}, and we claim no state of the art.
+The trade was deliberate: closed-loop official scoring of \emph{every} candidate (not just the executed one) is what makes selected regret directly measurable, and a controlled internal environment is what makes prospective freezing, sealed cohorts, and bit-exact provenance enforceable.
+We give up leaderboard placement and buy inferential validity; porting the protocol to a public closed-loop benchmark is the obvious next step and the capture contract (\cref{sec:capture}) is simulator-agnostic.
+
+\paragraph{Small absolute effects are the honest scale.}
+A regret delta of \MThreeKEightRegretMean{} on a $[0,1]$ score is small.
+That is what selection headroom under a strong generator at $K{=}8$ \emph{is}: the incumbent already operates near the oracle on most groups, and the remaining slack concentrates in a minority of scenes.
+This is precisely why the paper leans on CIs, preregistration, and a powered design rather than point estimates---at this effect scale, standard practice (single split, no CIs, post-hoc metric choice) can produce any conclusion one likes.
+We regard the evidence standard as load-bearing for the claims, not as ornamentation.
+
+\paragraph{Scope.}
+One generator (\vlaname, 10B), one simulator, one candidate regime ($K{=}8$ sampled; WoTE-style designs use up to 256 anchors), one representation site (final-layer prefill).
+The last-token result is a statement about \emph{this} class of autoregressive driving VLAs---where the prefill terminus is the state from which generation begins---and its transfer to other architectures (e.g., diffusion planners with no comparable terminus) is untested.
+Scenes are simulator-native; no real-world driving data is touched.
+
+\paragraph{The amortized--explicit spectrum.}
+Our zero-rollout endpoint and WoTE's online imagination bracket a spectrum whose middle is unexplored: scoring a \emph{predicted} future (one amortized rollout step), consuming the auxiliary heads at inference, or distilling an explicit evaluator into a prefill reader.
+The deletion test (\cref{sec:head}) gives the spectrum a crisp operational coordinate: how much of the evaluator's decision changes when its forward-looking components are removed at inference.
+Mapping selection quality along that coordinate---and testing whether the last-token summary remains sufficient as $K$ grows toward anchor-set scale---is where we would go next.

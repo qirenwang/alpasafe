@@ -1,0 +1,1494 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SafeWorld / AlpaSim / WoTE 技术总结 v8 — WACV 投稿版</title>
+    <style>
+    :root {
+        --ink: #172033;
+        --muted: #5d677a;
+        --paper: #f4f7fb;
+        --card: #fff;
+        --navy: #123a63;
+        --blue: #2563a6;
+        --cyan: #e8f3ff;
+        --green: #176b50;
+        --green-bg: #eaf8f2;
+        --amber: #8a5a00;
+        --amber-bg: #fff6dc;
+        --red: #9c2f2f;
+        --red-bg: #fff0f0;
+        --purple: #5e3a87;
+        --purple-bg: #f4effb;
+        --line: #dce3ee;
+        --code: #eef2f7
+    }
+
+    * {
+        box-sizing:border-box
+    }
+
+    html {
+        scroll-behavior:smooth
+    }
+
+    body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif;
+        line-height:1.72
+    }
+
+    a {
+        color: var(--blue);
+        text-decoration:none
+    }
+
+    a:hover {
+        text-decoration:underline
+    }
+
+    header {
+        background: linear-gradient(135deg, #0e2f51, #205d91);
+        color: #fff;
+        padding:54px 24px 46px
+    }
+
+    .header-inner {
+        max-width: 1180px;
+        margin:auto
+    }
+
+    .kicker {
+        font-size: 13px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        opacity:.82
+    }
+
+    h1 {
+        font-size: 35px;
+        line-height: 1.25;
+        margin: 12px 0 14px;
+        max-width:1100px
+    }
+
+    .subtitle {
+        font-size: 18px;
+        max-width: 1080px;
+        opacity:.94
+    }
+
+    .meta {
+        margin-top: 22px;
+        font-size: 13px;
+        opacity:.78
+    }
+
+    .hero-status {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top:18px
+    }
+
+    .hero-status span {
+        background: rgba(255, 255, 255, .13);
+        border: 1px solid rgba(255, 255, 255, .22);
+        padding: 5px 9px;
+        border-radius: 999px;
+        font-size:12px
+    }
+
+    .layout {
+        max-width: 1360px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 26px;
+        padding:28px 22px 72px
+    }
+
+    nav {
+        position: sticky;
+        top: 18px;
+        align-self: start;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 7px 22px rgba(20, 44, 74, .06);
+        max-height: calc(100vh - 36px);
+        overflow:auto
+    }
+
+    nav strong {
+        display: block;
+        margin-bottom: 8px;
+        color:var(--navy)
+    }
+
+    nav a {
+        display: block;
+        font-size: 13px;
+        padding: 6px 8px;
+        border-radius: 7px;
+        color:#34435a
+    }
+
+    nav a:hover {
+        background: var(--cyan);
+        text-decoration:none
+    }
+
+    main {
+        min-width:0
+    }
+
+    .section {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 28px 30px;
+        margin-bottom: 22px;
+        box-shadow:0 7px 22px rgba(20, 44, 74, .045)
+    }
+
+    h2 {
+        font-size: 25px;
+        color: var(--navy);
+        margin: 0 0 16px;
+        padding-bottom: 10px;
+        border-bottom:2px solid #e9eef5
+    }
+
+    h3 {
+        font-size: 19px;
+        color: #1a4f7d;
+        margin:25px 0 9px
+    }
+
+    h4 {
+        font-size: 16px;
+        margin:20px 0 7px
+    }
+
+    p {
+        margin:10px 0
+    }
+
+    .lead {
+        font-size:18px
+    }
+
+    .small {
+        font-size: 13px;
+        color:var(--muted)
+    }
+
+    .status-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin:18px 0
+    }
+
+    .status-grid > div {
+        border-radius: 12px;
+        padding: 17px;
+        border:1px solid var(--line)
+    }
+
+    .status-grid b {
+        display: block;
+        margin-bottom:6px
+    }
+
+    .ok {
+        background:var(--green-bg)
+    }
+
+    .warn {
+        background:var(--amber-bg)
+    }
+
+    .bad {
+        background:var(--red-bg)
+    }
+
+    .info {
+        background:var(--cyan)
+    }
+
+    .purple {
+        background:var(--purple-bg)
+    }
+
+    .callout {
+        border-left: 5px solid var(--blue);
+        background: var(--cyan);
+        padding: 15px 18px;
+        border-radius: 7px;
+        margin:17px 0
+    }
+
+    .callout.warn {
+        border-left-color: #d99a19;
+        background:var(--amber-bg)
+    }
+
+    .callout.danger {
+        border-left-color: #c84b4b;
+        background:var(--red-bg)
+    }
+
+    .callout.good {
+        border-left-color: #248568;
+        background:var(--green-bg)
+    }
+
+    .callout.purple {
+        border-left-color: #7952a8;
+        background:var(--purple-bg)
+    }
+
+    .pipeline {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin:18px 0
+    }
+
+    .node {
+        flex: 1 1 150px;
+        min-width: 140px;
+        background: #f9fbfe;
+        border: 1px solid #cfdbea;
+        border-radius: 11px;
+        padding: 13px;
+        text-align: center;
+        font-size:14px
+    }
+
+    .node strong {
+        display: block;
+        color: var(--navy);
+        margin-bottom:4px
+    }
+
+    .arrow {
+        align-self: center;
+        color: #7d8ba0;
+        font-weight: 700;
+        font-size:20px
+    }
+
+    .formula {
+        background: var(--code);
+        border: 1px solid #d7dee8;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin: 13px 0;
+        font-family: "Noto Sans Mono CJK SC", Consolas, monospace;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        font-size:13px
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        margin:15px 0
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.2px;
+        background:#fff
+    }
+
+    th, td {
+        padding: 10px 11px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+        text-align:left
+    }
+
+    th {
+        background: #eef4fa;
+        color: #173e64;
+        font-weight: 700;
+        white-space:nowrap
+    }
+
+    tr:last-child td {
+        border-bottom:none
+    }
+
+    thead {
+        display:table-header-group
+    }
+
+    .badge {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 2px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #e9eef6;
+        color:#3b4a60
+    }
+
+    .badge.green {
+        background: #e1f5ec;
+        color:#176b50
+    }
+
+    .badge.amber {
+        background: #fff0c4;
+        color:#8a5a00
+    }
+
+    .badge.blue {
+        background: #e2effd;
+        color:#174f86
+    }
+
+    .badge.red {
+        background: #ffe1e1;
+        color:#8b2626
+    }
+
+    code {
+        font-family: "Noto Sans Mono CJK SC", Consolas, monospace;
+        font-size: .93em;
+        background: #f1f4f8;
+        padding: 1px 4px;
+        border-radius: 4px;
+        overflow-wrap:anywhere
+    }
+
+    ul, ol {
+        padding-left:22px
+    }
+
+    li {
+        margin:6px 0
+    }
+
+    .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap:18px
+    }
+
+    .card {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 17px;
+        background:#fbfcfe
+    }
+
+    .card h3 {
+        margin-top:0
+    }
+
+    .metric-big {
+        font-size: 28px;
+        font-weight: 800;
+        color:var(--navy)
+    }
+
+    .metric-label {
+        font-size: 12px;
+        color:var(--muted)
+    }
+
+    .four-col {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap:12px
+    }
+
+    .three-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap:12px
+    }
+
+    .mini {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 15px;
+        background:#fbfcfe
+    }
+
+    .mini b {
+        display: block;
+        color:var(--navy)
+    }
+
+    .timeline {
+        border-left: 3px solid #cdd9e8;
+        padding-left:20px
+    }
+
+    .timeline > div {
+        margin: 0 0 18px;
+        position:relative
+    }
+
+    .timeline > div:before {
+        content: "";
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #2563a6;
+        left: -27px;
+        top:7px
+    }
+
+    .diagram {
+        background: #f8fbff;
+        border: 1px solid #d5e1ef;
+        border-radius: 14px;
+        padding: 18px;
+        margin:16px 0
+    }
+
+    .source-note {
+        font-size: 12px;
+        color: var(--muted);
+        border-top: 1px dashed var(--line);
+        padding-top: 10px;
+        margin-top:18px
+    }
+
+    .result-hero {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin:18px 0
+    }
+
+    .result-hero > div {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 17px;
+        background:#fbfcfe
+    }
+
+    .result-hero .num {
+        font-size: 25px;
+        font-weight: 800;
+        color:var(--navy)
+    }
+
+    .pass {
+        color: #176b50;
+        font-weight:700
+    }
+
+    .fail {
+        color: #9c2f2f;
+        font-weight:700
+    }
+
+    .neutral {
+        color:#5d677a
+    }
+
+    .two-level {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap:16px
+    }
+
+    .evidence {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        background:#fbfcfe
+    }
+
+    .evidence strong {
+        color:var(--navy)
+    }
+
+    .decision-tree {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 12px;
+        align-items:center
+    }
+
+    .decision-tree .branch {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 15px;
+        background:#fbfcfe
+    }
+
+    .decision-tree .mid {
+        font-size: 24px;
+        color:#708096
+    }
+
+    .revision-table td:first-child {
+        font-weight: 700;
+        white-space:nowrap
+    }
+
+    .nowrap {
+        white-space: nowrap
+    }
+
+    @media (max-width: 980px) {
+        .layout {
+            grid-template-columns:1fr
+        }
+
+        nav {
+            position: relative;
+            top: 0;
+            max-height:none
+        }
+
+        .status-grid, .four-col, .three-col, .split, .result-hero, .two-level, .decision-tree {
+            grid-template-columns:1fr
+        }
+
+        h1 {
+            font-size:29px
+        }
+
+        .section {
+            padding:22px 20px
+        }
+
+        .decision-tree .mid {
+            transform: rotate(90deg);
+            text-align: center
+        }
+    }
+
+    @page {
+        size: A4;
+        margin: 13mm 11mm 14mm
+    }
+
+    @media print {
+        body {
+            background: #fff;
+            font-size:9.8pt
+        }
+
+        header {
+            padding: 15mm 10mm 11mm;
+            color: #fff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust:exact
+        }
+
+        .layout {
+            display: block;
+            padding:0
+        }
+
+        nav {
+            display:none
+        }
+
+        .section {
+            box-shadow: none;
+            border-radius: 8px;
+            margin: 0 0 6mm;
+            padding: 6.5mm 7mm;
+            break-inside:auto
+        }
+
+        h1 {
+            font-size:23pt
+        }
+
+        h2 {
+            font-size: 16.5pt;
+            break-after:avoid
+        }
+
+        h3 {
+            font-size: 12.5pt;
+            break-after:avoid
+        }
+
+        .callout, .status-grid > div, .node, th, .mini, .result-hero > div {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust:exact
+        }
+
+        .table-wrap {
+            overflow:visible
+        }
+
+        tr {
+            break-inside:avoid
+        }
+
+        .pipeline, .diagram, .four-col, .three-col, .result-hero, .two-level, .decision-tree {
+            break-inside:avoid
+        }
+
+        a {
+            color:#174f86
+        }
+
+        .source-note {
+            font-size:8.5pt
+        }
+
+        pre, .formula {
+            white-space: pre-wrap;
+            word-break: break-word
+        }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div class="kicker">Corrected technical summary - v8 (WACV submission edition)</div>
+            <h1>SafeWorld：FM1 与 FN1 双线终审完成，进入 WACV 2027 "One Token Is Enough" 投稿版</h1>
+            <div class="subtitle">从 173 场景 prospective full-L2 cohort，到 525 场景足够功效终审：L3 scene value 三次独立复现、整段序列被 CI 支持地劣于末 token、L3 与几何基线在部署规模上等价 —— 全部实验线以预注册方式关闭，论文成为唯一交付物</div>
+            <div class="hero-status">
+                <span>FM1 closed 2026-08-03</span>
+                <span>FN1 closed 2026-08-09</span>
+                <span>525 scenes / 1,575 groups / 12,600 scores</span>
+                <span>35 sealed scenes stay sealed forever</span>
+                <span>WACV 2027 Round 2: submit 08-28 AoE</span>
+            </div>
+            <div class="meta">2026-08-10 更新版 - 取代 2026-08-03 v7 - SafeWorld / AlpaSafe 技术与架构文档</div>
+        </div>
+    </header>
+    <div class="layout">
+        <nav>
+            <strong>目录</strong>
+            <a href="#revision">1. v8 修订与当前状态</a>
+            <a href="#summary">2. 执行摘要</a>
+            <a href="#architecture">3. 最终架构</a>
+            <a href="#formulas">4. 冻结公式与目标函数</a>
+            <a href="#dataset">5. 数据资产总盘</a>
+            <a href="#fm1">6. FM1：整段序列不如末 token</a>
+            <a href="#fn0">7. FN0/FN-A：功效扩展</a>
+            <a href="#fn1">8. FN1：足够功效下的边界判定</a>
+            <a href="#scenevalue">9. 三次复现的 scene value</a>
+            <a href="#efficiency">10. 效率与部署路径</a>
+            <a href="#paper">11. WACV 论文投稿版映射</a>
+            <a href="#wote">12. 与 WoTE 的定位</a>
+            <a href="#history">13. 证据时间线</a>
+            <a href="#interpretation">14. 当前科学解释</a>
+            <a href="#todo">15. 论文收尾与禁止事项</a>
+            <a href="#w0">16. W0 探索线（论文外）</a>
+            <a href="#handoff">17. 新会话与 authority</a>
+        </nav>
+        <main>
+            <section class="section" id="revision">
+                <h2>1. v8 修订：从"数据就绪、性能未测"到"两条实验线均已终审、论文进入定稿"</h2>
+                <p>v7（2026-08-03）停在 "FA2 acquired, FM0 next, training not started"。此后一周内 FM0 → FM1 → FN0 → FN-A → FN1 五个阶段全部按预注册合约执行完毕并终审。本 v8 是与 WACV 2027 投稿版对齐的技术总结。</p>
+                <div class="status-grid">
+                    <div class="ok">
+                        <b>FM1 完成（08-03）</b>
+                        FULL vs LASTTOKEN vs NULL vs legacy，60/60 CV runs。轻量 full-L2 reader 线<strong>关闭</strong>。
+                    </div>
+                    <div class="ok">
+                        <b>FN-A 完成（08-09）</b>
+                        352 场景扩展 cohort，1,056 groups / 8,448 scores，零缺陷，L3-row-only 保留。
+                    </div>
+                    <div class="ok">
+                        <b>FN1 完成（08-09）</b>
+                        525 场景、power 0.80 终审：Q1 否、Q2 否；CONS selector 线<strong>关闭</strong>；N2 scene value 第三次复现且最强。
+                    </div>
+                    <div class="warn">
+                        <b>唯一交付物 = 论文</b>
+                        初稿已成（547 个数字宏零占位），branch B 已切换；8-28 AoE 提交。
+                    </div>
+                </div>
+                <div class="callout danger">
+                    <strong>v7 已过时的核心状态：</strong>
+                    "FULL vs LASTTOKEN 性能未测试"、"FN2 confirmation 待 FN1 通过后进行" 均已失效。现在的正确状态是：<strong>所有预注册假设均已判定；35-scene sealed cohort 永久封存（无 FN2，<code>fn2_prereg_generated: false</code>）；不存在任何待启动的训练</strong>。
+                </div>
+                <div class="table-wrap">
+                    <table class="revision-table">
+                        <thead>
+                            <tr>
+                                <th>v7 时点的表述或预期</th>
+                                <th>v8 当前事实</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Full-L2 reader 可能修复 over-compression</td>
+                                <td>反向被证实：M1 FULL−LASTTOKEN 在两个 primary 上均 CI 支持地<strong>更差</strong>（regret +0.0085、top-1 −0.0527）。reader 因果地使用场景（G5 通过），但用得比单 token 通路更差。</td>
+                            </tr>
+                            <tr>
+                                <td>FM1 的 vs-legacy 边际（M5 regret −0.0051）值得功效扩展验证</td>
+                                <td>已验证为 winner's-curse 收缩：在恰好按其 sized 的功效下（N=466, power 0.8001），N1 边际收缩到 −0.0014，CI [−0.0057, +0.0028] 跨 0。同时 FM1 的 top-1 劣势也消失 → <strong>L3 selector ≈ legacy，两个 primary 均等价</strong>。</td>
+                            </tr>
+                            <tr>
+                                <td>E1 selector loss 的 top-1 增益（+0.083）可能前瞻迁移</td>
+                                <td>未迁移：N3 top-1 −0.000 CI [−0.012, +0.011]（买不到 top-1），regret +0.0029 CI [+0.0005, +0.0056]（CI 支持地卖掉 regret）→ Q2 否，G5 双条款失败。</td>
+                            </tr>
+                            <tr>
+                                <td>35-scene reserve 留给 FN2 winner confirmation</td>
+                                <td>两个 candidate 均未通过 promotion gates → 无 winner、无 FN2，35 场景<strong>永久封存、从未被打开</strong>——这本身成为论文的 evidence-rigor 卖点。</td>
+                            </tr>
+                            <tr>
+                                <td>FN0 扩展池 = 578（由 FA1 lists 推导）</td>
+                                <td>FN-A preflight 纠正：<strong>FA2 才是 cohort authority</strong>（FA1 派生的冻结扩展表前 3 个场景竟是 sealed 35 之内的场景，采集前被拦截）。教训固化：永远不要从 FA1 splits 推导 cohort 算术。</td>
+                            </tr>
+                            <tr>
+                                <td>"L3 优于 legacy" 是候选论文主张</td>
+                                <td>不成立，也不再需要：论文的 C4 采用预先写好的 <strong>branch B（boundary statement）</strong>——表征携带真实信号，但 202k 参数的轨迹几何 MLP 在部署规模上抽取出等价的选择性能。</td>
+                            </tr>
+                            <tr>
+                                <td>WoTE 数字可作效率对照表的一行</td>
+                                <td>用户 08-09 指令：<strong>WoTE 实验数字一律不进论文</strong>（表格/图/正文比较均不允许）；WoTE 仅作 Related Work 概念与架构定位（256 anchors、2-step imagination 等设计事实可以出现）。已在 Table 2、Fig.1、§5 全部执行。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section" id="summary">
+                <h2>2. 执行摘要</h2>
+                <p class="lead">论文题目：<strong>"One Token Is Enough: Trajectory Selection from a Frozen Driving VLA's Prefill State"</strong>。核心问题从"能否获得 full L2"（v6）、"full L2 是否优于 L3"（v7）最终收敛为一组已判定的科学命题：</p>
+                <div class="result-hero">
+                    <div>
+                        <div class="num">−0.0129 / +0.112</div>
+                        <b>N2：L3 − NULL（525 场景）</b>
+                        <div class="small">regret CI [−0.0173, −0.0086]，top-1 CI [+0.094, +0.130]。scene value 第三次独立复现，CI 最紧、效应约为 FM1 的 2 倍。</div>
+                    </div>
+                    <div>
+                        <div class="num">+0.0085 / −0.0527</div>
+                        <b>M1：FULL − LASTTOKEN（173 场景）</b>
+                        <div class="small">两个 primary 均 CI 支持地更差 → "one token is enough" 的反直觉负结果。</div>
+                    </div>
+                    <div>
+                        <div class="num">−0.0014</div>
+                        <b>N1：L3 − legacy regret（power 0.80）</b>
+                        <div class="small">CI [−0.0057, +0.0028] 跨 0，top-1 +0.003 也跨 0 → 与强几何基线等价的干净边界判定。</div>
+                    </div>
+                    <div>
+                        <div class="num">1.19 ms / 3.5 MB</div>
+                        <b>部署路径（LASTTOKEN）</b>
+                        <div class="small">1,708,871 参数 head；FULL reader 为 1.29 ms / 165.2 MB（47× 显存差），且更贵的那条更差。</div>
+                    </div>
+                </div>
+                <h3>选优阶梯（FN1，525 untouched scenes，K=8）</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Selector</th>
+                                <th>K8 selected regret ↓</th>
+                                <th>K8 tie-aware top-1 ↑</th>
+                                <th>解读</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Random pick（raw Alpamayo，无 selector）</td>
+                                <td>0.0593</td>
+                                <td>12.5%</td>
+                                <td>uniform 8 选 1 期望 regret（scene-macro，ad hoc 计算自两个冻结数据集）。</td>
+                            </tr>
+                            <tr>
+                                <td>NULL（no-scene matched control）</td>
+                                <td>0.0450</td>
+                                <td>63.7%</td>
+                                <td>只看轨迹自身的 matched head。</td>
+                            </tr>
+                            <tr>
+                                <td>Legacy geometry MLP（202k 参数）</td>
+                                <td>0.0334</td>
+                                <td>74.6%</td>
+                                <td>预注册的 Q1 incumbent。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>L3 checkpoint arm（本文方法）</strong></td>
+                                <td><strong>0.0321</strong></td>
+                                <td><strong>74.9%</strong></td>
+                                <td>与 legacy 统计等价；对 NULL 的增益 CI 支持。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout good">
+                    <strong>程序结论（写进论文 §6 的一句话版）：</strong>
+                    冻结 10B 驾驶 VLA 的 prefill 末 token 携带<strong>真实、因果、三次复现</strong>的 scene-specific 选择信号（wrong-scene 与 zero 消融均使其退化）；但一个 202k 参数的轨迹几何 MLP 在部署规模上抽取出<strong>等价</strong>的选择性能——表征重用的收益边界被以 power 0.80 的预注册检验干净地画出。
+                </div>
+                <div class="callout warn">
+                    <strong>不再存在的"待办实验"：</strong>
+                    reader 线（FM1）与 CONS selector 线（FN1）均按合约关闭；任何新的 reader、selector loss 组合、temporal world model 都必须是<strong>另行预注册的新研究</strong>（FA0/FA1 boundary clause）。当前唯一例外是 §16 的 W0 纯探索线，它不进论文、不碰冻结数据契约。
+                </div>
+            </section>
+
+            <section class="section" id="architecture">
+                <h2>3. 最终架构：SafeWorldF1 —— 一个 shared L3，K 个 candidate 查询，后果知识全部摊销</h2>
+                <div class="pipeline">
+                    <div class="node">
+                        <strong>Shared observation</strong>
+                        camera / ego history / navigation
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="node">
+                        <strong>Frozen Alpamayo-1.5-10B prefill</strong>
+                        一次 prompt prefill（production predict() 内 hook）
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="node">
+                        <strong>L3 = full_L2[−1]</strong>
+                        <code>[4096]</code>，bit-exact 证明为最终层 hidden 序列末行
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="node">
+                        <strong>K=8 branches</strong>
+                        reasoning + diffusion trajectories
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="node">
+                        <strong>SafeWorldF1 head</strong>
+                        1,708,871 参数，1.19 ms
+                    </div>
+                </div>
+                <div class="diagram">
+                    <div class="formula">For candidate i in group g (K=8, candidate-independent, no cross-candidate attention):
+  planned_trajectory_i [64,2]  -> trajectory encoder -> query_i
+  query_i × L3 scene feature   -> candidate-conditioned latent z_i
+  score head:      ŷ_{g,i} = m̂_g + S·tanh(û_{g,i}/S)          (§4.1)
+  auxiliary heads: future ego [64,2] / progress / collision / offroad   (training-only)
+  selection:       argmax_i ŷ_{g,i}   (deterministic)</div>
+                </div>
+                <div class="split">
+                    <div class="card">
+                        <h3>定型的设计决策（各自有专属修复阶段）</h3>
+                        <ul>
+                            <li><strong>Group-mean / candidate-residual 分解</strong>（C0）：官方分数 98.2% 是 group-level offset，分解后 ranking 信号才可学。</li>
+                            <li><strong>Bounded residual</strong>（D0/D）：<code>S·tanh(·/S)</code> 修复 rank/centered 梯度冲突（cosine −0.22…−0.41 → +0.02…+0.34，spread −48%）。</li>
+                            <li><strong>Inner-validation-only checkpointing</strong>（E0，CONSTRAINED_SELECTOR_FIRST）。</li>
+                            <li><strong>Candidate independence</strong>：无 cross-candidate attention，score 不依赖候选集合构成。</li>
+                            <li><strong>Amortized consequence knowledge</strong>：future/progress/collision/offroad 仅作辅助监督；<strong>deletion test</strong> —— 推理时删除全部辅助头，score bit-identical → 不是 world model（推理路径上零 state prediction）。</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>被关闭的替代架构（全部有 CI 支持的判定）</h3>
+                        <ul>
+                            <li><strong>Compressed-L2 V1</strong>（32-token 均值池化）：内容为负贡献（−0.032，zeroing 反而更好），T26G-B 关闭。</li>
+                            <li><strong>FULL 3086-token reader</strong>：matched 容量下劣于 LASTTOKEN 两个 primary（FM1 M1），关闭。</li>
+                            <li><strong>E1 selector loss 作为部署目标</strong>：前瞻验证买不到 top-1、卖掉 regret（FN1 N3），关闭；E1 的 +0.083 top-1 是回溯性 cohort 上的一次性现象。</li>
+                            <li><strong>Expected-regret softmax</strong>（E0 拒绝）：selector 自信地错时梯度恰好消失（对照实测：frozen loss 饱和于 ~24.9，softmax 族梯度 ~1.3×10⁻⁶⁰）。</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="callout">
+                    <strong>Same-prefill capture（论文 C1 / Fig.2）：</strong>
+                    候选与表征来自<strong>同一次</strong> prefill 事件；exactly-one-prefill 断言 + capture-time tensor hash 链 + <code>L3 == full_L2[-1]</code> 519/519 bit-exact，排除"表征与候选异源"混淆。这是 F0→FP0→FR0→FS0 历史闭包失败链换来的协议。
+                </div>
+            </section>
+
+            <section class="section" id="formulas">
+                <h2>4. 冻结公式与目标函数（全部机械推导，零调参）</h2>
+                <h3>4.1 分数分解与有界残差（C0 + D0，全臂共用）</h3>
+                <div class="formula">ŷ_{g,i} = m̂_g + r_{g,i}
+  m̂_g    : group-mean head（candidate 无关，读 scene 表征）
+  r_{g,i} = S · tanh( û_{g,i} / S ),  S = 0.67
+  û_{g,i}: candidate-conditioned raw residual（zero-init residual head）</div>
+                <p class="small">S=0.67 由 D0 从 within-group 官方分数 spread 分位数机械推导；zero-init residual head 意味着任何 score-probe 在初始化时 vacuous（F0-B 记录的陷阱），且 shared-trunk 梯度在初始化恒为零 —— 这直接决定了 4.3 的 scale-match 统计量选择。</p>
+
+                <h3>4.2 Checkpoint-only objective（部署臂 P_L3_CKPT 的训练目标）</h3>
+                <div class="formula">L_ckpt = 0.5·L_centered + 0.25·L_future + 0.1·L_group_mean
+       + 0.1·L_progress + 0.1·L_collision + 0.1·L_offroad
+  （SmoothL1 beta 按目标尺度 scale-matched；系数自 C0 起冻结未改）</div>
+                <p class="small">其中 future/progress/collision/offroad 四个头即"摊销的后果知识"：训练时把闭环后果压进表征读取器，推理时整体删除，score 不变（deletion test）。</p>
+
+                <h3>4.3 E0 selector loss（P_L3_SEL 臂；FN1 已判定不部署，公式保留为论文 §4.4 + supp lemma）</h3>
+                <div class="formula">Tied-best set:  B_g = { i : y_max − y_i ≤ ε },  ε = 1e-6 (复用 RANK_EPS)
+Pair weight:    w_j = y_max − y_j                （true regret, j ∉ B_g）
+Per-pair loss:  (w_j / |B_g|) · softplus( −(s_i − s_j) / τ ),  i ∈ B_g, j ∉ B_g
+Batch pooling:  Σ weighted pair losses / Σ pair weights
+τ = 0.043 = ceil_0.001( median positive oracle-best gap )   (raw 0.04298818)
+coef = 0.026  (RMS dL/ds scale-match at equal scores; unrounded 0.02643769)
+替换关系:      REPLACE L_rank_margin（系数 1.00,整体移除）,非叠加</div>
+                <ul>
+                    <li><strong>为何选这个族</strong>（E0 决定性判据 5）：目标函数存在的意义是修复 top-of-list；regret-weighted logistic 在"selector 自信地错"处梯度<strong>饱和</strong>（有界、非零），而被拒绝的 expected-regret softmax 在同一处梯度<strong>消失</strong>。</li>
+                    <li><strong>All-tie group 语义</strong>（冻结结构规则）：tied-best 集为整组时不存在 (best, rest) 对，损失为确定性精确零——但实现上返回的是<strong>非空零权重对</strong>。FN1 中 169/1,575 组（10.7%）为 all-tie，SEL 布线经 D-pooling 时其守卫只覆盖空对 → 15 个 SEL run 全部即时 NaN；predict 阶段 sel==treated bit-identity 检查在 lock 之前捕获，修复守卫为 <code>numel()==0 or pw.sum()==0.0</code> 并重训（mid-run repair 001，零科学影响）。<strong>教训：合成一致性测试必须包含 all-tie score batch。</strong></li>
+                </ul>
+
+                <h3>4.4 指标定义（唯一监督 = AlpaSim official scene score ∈ [0,1]）</h3>
+                <div class="formula">selected regret_g = y_{g,oracle} − y_{g,selected}          (scene-macro 聚合)
+tie-aware top-1_g = 1[ y_{g,selected} ≥ y_{g,max} − ε ]
+K-subsets: K2 / K5 / K8（frozen subset rule）; 95% CI = 10k paired scene bootstrap
+seeds: FM1 = 20260803, FN1 = 20260809（= 各自 record 日期,冻结规则）</div>
+                <div class="callout danger">
+                    <strong>指标边界不变：</strong>
+                    submetric（future/progress/collision/offroad）不得手工重组 official score（anti-gaming）；WoTE 的 NC/DAC/TTC/Comfort/EP/PDMS、NAVSIM、nuPlan 均不进入本程序。
+                </div>
+            </section>
+
+            <section class="section" id="dataset">
+                <h2>5. 数据资产总盘（全部冻结、零缺陷）</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cohort</th>
+                                <th>规模</th>
+                                <th>表征保留</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>FA2</strong>（2026-07-30 采集）</td>
+                                <td>173 scenes / 519 groups / 4,152 scored candidates</td>
+                                <td>full L2 <code>[3086,4096]</code> bf16 × 519（SHA 全唯一）+ L3；scoring ASL 544 G + dump ASL 40 G 保留</td>
+                                <td><span class="badge green">FROZEN</span> FM1 与 FN1 的 base cohort</td>
+                            </tr>
+                            <tr>
+                                <td><strong>FN-A</strong>（2026-08-09 完成）</td>
+                                <td>352 scenes / 1,056 groups / 8,448 scored candidates</td>
+                                <td><strong>L3-row-only</strong>（<code>full_l2_sequences_retained: 0</code>），每组 parent-hash proof；labels 采集时内联（FM0 教训的执行）</td>
+                                <td><span class="badge green">FROZEN</span> 12/12 检查零缺陷；3 起事故全部解决入档</td>
+                            </tr>
+                            <tr>
+                                <td><strong>FN1 合并 cohort</strong></td>
+                                <td><strong>525 scenes / 1,575 groups / 12,600 scores</strong></td>
+                                <td>FA2 的 L3 = full_L2 末行；FN-A 的 l3_rows；amendment→replacement 链 reconcile，freeze dataset authoritative</td>
+                                <td><span class="badge blue">终审用</span> folds namespace T26G-FN（rank mod 5）</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sealed confirmation</strong></td>
+                                <td>35 scenes</td>
+                                <td>—</td>
+                                <td><span class="badge red">永久封存</span> 从未被任何模型触碰；FN1 无 winner → 无 FN2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3>FN-A 的三起事故（全部零科学影响，全部入档）</h3>
+                <ul>
+                    <li><strong>08-04 HF dead-peer stall</strong>（asset 273，2.5h 零流量 TLS）→ <code>HF_HUB_DOWNLOAD_TIMEOUT=30</code> 进入 run script。</li>
+                    <li><strong>08-07 五个确定性场景失败</strong>（AlpaSim route sanity：4× ~180° fold-back，1× route-too-far）→ 冻结的 FA0 replacement rule 执行（replacement 001，reserve 余 221）。</li>
+                    <li><strong>08-09 post_eval resume-boundary 缺陷</strong>（<code>jobs/aggregate</code> 目录排序陷阱 → 静默复用 stale 8,328 行 summary → labels 零容忍 rc=5 硬停，正确行为）→ mid-run repair 001。这是 FA/FN 线第 3 起 phase-boundary codegen 缺陷；连同 FN1 的 all-tie 修复共 4 起，<strong>全部被防御性检查在污染任何结果前拦截</strong>。</li>
+                </ul>
+                <div class="callout warn">
+                    <strong>Cohort authority 规则（FN0 缺陷换来的）：</strong>
+                    FA2 splits 是唯一 cohort authority。FN0 曾从 FA1 lists 推导扩展池，冻结列表前 3 个场景是 sealed-35 成员——被 FN-A hygiene preflight 在任何采集发生前拦截并按 FA1A 先例修正（FN0 record 未改动）。
+                </div>
+            </section>
+
+            <section class="section" id="fm1">
+                <h2>6. FM1（173 场景）：整段序列 CI 支持地不如末 token</h2>
+                <p>60/60 CV runs + 24 refits，69 分钟 tmux 全自动，terminal 状态 <code>T26G_FM1_NO_FULL_L2_GAIN_CLOSE_LIGHTWEIGHT_READER_LINE</code>。Gates 3/10（PASS：G5 因果场景使用、G9 预算、G10 完整性）。</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Edge（K8, 173 scenes, 10k paired bootstrap）</th>
+                                <th>Δ regret（↓好）</th>
+                                <th>Δ top-1（↑好）</th>
+                                <th>判定</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>M1 FULL − LASTTOKEN</strong></td>
+                                <td class="fail">+0.0085 [+0.0030, +0.0143]</td>
+                                <td class="fail">−0.0527 [−0.0822, −0.0238]</td>
+                                <td>全序列在两个 primary 上均 CI 支持地更差。over-compression 假设被反向 refute。</td>
+                            </tr>
+                            <tr>
+                                <td>M2 FULL − NULL</td>
+                                <td class="neutral">+0.0016（跨 0）</td>
+                                <td class="pass">+0.0469（CI 正）</td>
+                                <td>全序列相对无场景仅有部分增益。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>M3 LASTTOKEN − NULL</strong></td>
+                                <td class="pass">−0.0069 [−0.0124, −0.0012]</td>
+                                <td class="pass">+0.0996 [+0.0668, +0.1330]</td>
+                                <td>L3 scene value 的<strong>第一次完全前瞻复现</strong>（双端点 CI 支持）。</td>
+                            </tr>
+                            <tr>
+                                <td>M4 FULL − legacy</td>
+                                <td class="neutral">—</td>
+                                <td class="fail">−0.0861（CI 全负）</td>
+                                <td>全序列 reader 明确劣于几何基线。</td>
+                            </tr>
+                            <tr>
+                                <td>M5 LASTTOKEN − legacy</td>
+                                <td class="neutral">−0.0051（point）</td>
+                                <td class="neutral">deficit（point）</td>
+                                <td>成为 FN0/Q1 的功效扩展对象；后被 FN1 判定为 winner's-curse。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3>绝对水平（K8，173 场景）</h3>
+                <div class="four-col">
+                    <div class="mini"><b>LASTTOKEN</b>regret 0.0371 / top-1 66.7%</div>
+                    <div class="mini"><b>FULL</b>regret 0.0456 / top-1 61.4%</div>
+                    <div class="mini"><b>NULL</b>regret 0.0439 / top-1 56.7%</div>
+                    <div class="mini"><b>Legacy</b>regret 0.0422 / top-1 70.0%</div>
+                </div>
+                <div class="callout purple">
+                    <strong>论文 §6.2 的解释框架：</strong>
+                    matched-params 设计（两臂同为 1,708,871 参数、同 folds、同目标）使解释收敛到"信息可及性"而非容量——G5 证明 FULL reader <em>因果地</em>使用场景（wrong-scene 与 zero 消融均使其退化：top-1 61.4% → 59.5% / 59.0%），它只是从 3086 个 token 中提取得比单 token 通路更差。
+                </div>
+            </section>
+
+            <section class="section" id="fn0">
+                <h2>7. FN0 / FN-A：把 M5 的 point estimate 变成可判定的假设</h2>
+                <div class="three-col">
+                    <div class="mini">
+                        <b>功效解析（bit-exact 自 FM1 locked npz）</b>
+                        SD_paired 0.039587，MDE 0.0051383 → N_total <strong>466</strong>，N_new 293 +20% = <strong>352</strong>，达成 power 0.8001；top-1 MDE @466 = 0.0326。
+                    </div>
+                    <div class="mini">
+                        <b>四臂 + 冻结提名规则</b>
+                        P_L3_CKPT_CONS / P_L3_SEL_CONS / P_NULL_CKPT_CONS / P_LEGACY；提名 SEL-first-else-CKPT-else-none；FULL visibility 合约上不可达。
+                    </div>
+                    <div class="mini">
+                        <b>两个预注册问题</b>
+                        <strong>Q1</strong>：功效扩展后 L3 是否 CI 支持地优于 legacy？<strong>Q2</strong>：selector loss 能否买 top-1 而不卖 regret（N3 regret CI-high &lt; +0.005）？
+                    </div>
+                </div>
+                <p>十门 margins 自 FM0/FA2/E0/F0B reread + hash 注册（0.005 / 0.010 / 0.013 / 0.046）；G2 point 条款书面解析为 top-1 point ≥ −0.013 且 CI low &gt; −0.046；G8 携带 per-cohort consistency 条款（seen-once honesty：在 untouched extension 子集上单独复核）。Inner-val 规则本次<strong>一等公民化</strong>（max(12, floor(0.15·n_train)) 最低秩场景，同 fold key）。</p>
+                <div class="callout">
+                    <strong>预注册的诚实性设计：</strong>
+                    FN0 在启动前书面承认 Q1 的最大风险就是 winner's-curse 收缩——这正是后来发生的事。两个终态（promotable → FN2 / 双候选失败 → 关线）在任何训练前写死,FN1 没有第三种出路。
+                </div>
+            </section>
+
+            <section class="section" id="fn1">
+                <h2>8. FN1（525 场景，power 0.80）：三个决定性答案</h2>
+                <p>60/60 CV + 22 refits，211 outputs reread 零失配，terminal 状态 <code>T26G_FN1_NO_STABLE_L3_PROMOTION_CLOSE_CONS_SELECTOR_LINE</code>，nominated_arm = None，FULL 从未实例化，sealed-35 untouched。</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Edge（K8, 525 scenes）</th>
+                                <th>Δ regret（↓好）</th>
+                                <th>Δ top-1（↑好）</th>
+                                <th>判定</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>N2 CKPT − NULL（scene value）</strong></td>
+                                <td class="pass">−0.0129 [−0.0173, −0.0086]</td>
+                                <td class="pass">+0.112 [+0.094, +0.130]</td>
+                                <td>第三次独立复现，CI 最紧、效应最强（~2× FM1）；G4 双候选通过。K5/K2 同向 CI 支持（K5：−0.0088/+0.110；K2：−0.0060/+0.073）。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>N1 CKPT − LEGACY（Q1）</strong></td>
+                                <td class="neutral">−0.0014 [−0.0057, +0.0028]</td>
+                                <td class="neutral">+0.003 [−0.020, +0.028]</td>
+                                <td><strong>Q1 = NO</strong>：M5 边际（−0.0051）在恰好 sized 的功效下收缩至跨 0；FM1 的 top-1 劣势同样消失 → 两 primary 均等价。CKPT 仅失 G1 + G8-cohort（通过 G2/G3/G6/G7）。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>N3 SEL − CKPT（Q2）</strong></td>
+                                <td class="fail">+0.0029 [+0.0005, +0.0056]</td>
+                                <td class="neutral">−0.000 [−0.012, +0.011]</td>
+                                <td><strong>Q2 = NO</strong>：买不到 top-1、CI 支持地卖掉 regret；G5 双条款失败。E1 先例（+0.083 top-1）未前瞻迁移。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3>值得写进论文的次级观察</h3>
+                <ul>
+                    <li><strong>Pairwise ranking 上 L3 确实更强</strong>：N1 K8 pairwise accuracy +0.050 [+0.031, +0.071]、best-vs-rest +0.052 [+0.031, +0.074]，均 CI 支持正——但这优势没有转化为 top-of-list primaries；K2 top-1 +0.021 [+0.006, +0.036] 提示小候选集下有微弱残余优势。"better ranker ≠ better selector" 的老主题（T26G-C 首见）在部署规模复现。</li>
+                    <li><strong>因果消融在 525 场景复现</strong>：CKPT normal 0.0321/74.9% → wrong-scene 0.0381/68.7% → zero 0.0406/56.8%；SEL 同向。</li>
+                    <li><strong>后果头的领域知识仍然真实</strong>：collision AUROC LASTTOKEN 0.703 vs NULL 0.476 vs legacy 0.342；future ADE 0.351 vs 0.414 vs 0.862（FM1 aux 面板）——表征"知道"后果，只是选择性能不需要它超过几何。</li>
+                    <li><strong>N4 命名澄清（已核对 FN0 comparison graph，非缺陷）</strong>：N1 的槽位是 "nominated − legacy"（双候选各算一次：N1_CKPT / N1_SEL），N4 预注册为 "P_L3_CKPT_CONS − P_LEGACY，无论提名结果都报告"——因此 N4 ≡ N1_CKPT 数值逐位相同是<strong>设计如此</strong>。论文正文用 \NFour* 时的表述为 "the checkpoint-objective candidate"（语义正确）；fig_results 的 Sel−Geo 行直接读 analysis JSON 的 N1_SEL（SEL−legacy regret 点估计约 +0.0016，同样跨 0），不经宏。</li>
+                </ul>
+                <div class="callout good">
+                    <strong>程序终局：</strong>
+                    L3 携带真实、因果、三次复现的场景信号；一个 202k 轨迹几何 MLP 在部署规模抽取出等价选择性能；表征相对 incumbent 的边际在功效检验下不存在。<strong>Reader 线与 CONS selector 线双双关闭；35 sealed scenes 永久封存。</strong>
+                </div>
+            </section>
+
+            <section class="section" id="scenevalue">
+                <h2>9. 论文的正结果主轴：同一效应的三次独立复现</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>复现</th>
+                                <th>Cohort</th>
+                                <th>Δ regret</th>
+                                <th>Δ top-1</th>
+                                <th>性质</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>E6（T26G-E1）</td>
+                                <td>回溯性 366-group cohort</td>
+                                <td>−0.0087 [−0.0172, −0.0007]</td>
+                                <td>+0.0829 [+0.0510, +0.1157]</td>
+                                <td>首次双端点 CI 支持（selector-loss 臂）；论文 supp 作 internal replication。</td>
+                            </tr>
+                            <tr>
+                                <td>M3（FM1）</td>
+                                <td>173 prospective untouched</td>
+                                <td>−0.0069 [−0.0124, −0.0012]</td>
+                                <td>+0.0996 [+0.0668, +0.1330]</td>
+                                <td>首次完全前瞻复现（新图内、checkpoint objective）。</td>
+                            </tr>
+                            <tr>
+                                <td><strong>N2（FN1）</strong></td>
+                                <td><strong>525 scenes（含 352 全新）</strong></td>
+                                <td><strong>−0.0129 [−0.0173, −0.0086]</strong></td>
+                                <td><strong>+0.112 [+0.094, +0.130]</strong></td>
+                                <td>最强、CI 最紧；G4 双候选通过；K2/K5/K8 全部同向 CI 支持。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout purple">
+                    <strong>因果证据（三层，均预注册）：</strong>
+                    (1) wrong-scene swap 使性能退化（信号是 scene-specific 而非 generic 偏置）；(2) zero ablation 退化更深（信号存在于表征内容）；(3) NULL matched control 排除容量/训练预算混淆。这组合在 173 与 525 两个 untouched cohort 上都成立。
+                </div>
+            </section>
+
+            <section class="section" id="efficiency">
+                <h2>10. 效率与部署路径（论文 Table 2，两行，无 WoTE 行）</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>路径</th>
+                                <th>输入</th>
+                                <th>参数</th>
+                                <th>延迟</th>
+                                <th>推理显存</th>
+                                <th>选择性能</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Deployed：LASTTOKEN (L3)</strong></td>
+                                <td><code>[1,4096]</code></td>
+                                <td>1,708,871</td>
+                                <td>1.19 ms med / 1.21 ms p95</td>
+                                <td><strong>3.5 MB</strong></td>
+                                <td>regret 0.0321 / top-1 74.9%（525 场景）</td>
+                            </tr>
+                            <tr>
+                                <td>FULL 3086-token reader（已关闭）</td>
+                                <td><code>[3086,4096]</code></td>
+                                <td>1,708,871（matched）</td>
+                                <td>1.299 ms med / 1.312 ms p95</td>
+                                <td>165.2 MB</td>
+                                <td>两 primary 均 CI 支持地更差（M1）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="three-col">
+                    <div class="mini"><b>47×</b>显存差——且更省的那条更准，本身即卖点（representation is free）。</div>
+                    <div class="mini"><b>0 步推理时 rollout</b>摊销谱系的最远端：score 路径上没有任何 state prediction。</div>
+                    <div class="mini"><b>勘误已入稿</b>outline 早期的 "1.29ms/158MB" 是 FULL reader（FM1 gpu_gate）；部署数字以 FN0 conformance 为准。</div>
+                </div>
+                <p class="small">对照基线：legacy geometry MLP 202k 参数（同 labels/folds/协议）。表征获取本身零成本——L3 是生成候选的同一次 prefill 的副产品。</p>
+            </section>
+
+            <section class="section" id="paper">
+                <h2>11. WACV 2027 投稿版映射（当前唯一交付物）</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>项目</th>
+                                <th>当前状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>标题</td>
+                                <td><em>One Token Is Enough: Trajectory Selection from a Frozen Driving VLA's Prefill State</em></td>
+                            </tr>
+                            <tr>
+                                <td>投稿目标</td>
+                                <td>WACV 2027 <strong>Round 2</strong>：注册 2026-08-21，提交 <strong>2026-08-28 AoE</strong></td>
+                            </tr>
+                            <tr>
+                                <td>稿件位置</td>
+                                <td><code>paper/wacv2027/</code>（main.tex + sec/0–6 + supp.tex + main.bib）；规划源 = <code>paper/wacv2027_safeworld_outline.md</code></td>
+                            </tr>
+                            <tr>
+                                <td>数字管线</td>
+                                <td><code>make_numbers.py</code> 读 FM1/FN1 analysis、FN0 power/conformance、E0 contract → <code>sec/numbers.tex</code> <strong>547 宏、零占位、零手抄</strong></td>
+                            </tr>
+                            <tr>
+                                <td>FN1 分支</td>
+                                <td>两分支预写于 <code>\iffnonedone/\iffnonepass</code>；08-09 夜切换为 <strong>branch B</strong>（<code>\fnonedonetrue, \fnonepassfalse</code>）</td>
+                            </tr>
+                            <tr>
+                                <td>图（v2，CV/AV 风格）</td>
+                                <td>5 张，<code>figs/make_fig*.py</code>：teaser（双路线）、capture（same-prefill 链）、fig_results（CI bars：Ckpt−Geo / Sel−Geo / Ckpt−Null / Sel−Ckpt）、fig4_ablations、arch。饱和色 = CI 排除 0（蓝利/红弊），浅色 = 跨 0；数据仍读 locked JSON。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3>四条贡献（C4 已定为 branch B）</h3>
+                <div class="two-level">
+                    <div class="evidence">
+                        <strong>C1「方法学」</strong> Same-prefill capture 协议 + 开放的评估程序设计：预注册、冻结十门、sealed cohort（35 场景从未打开）、因果消融、功效解析。
+                    </div>
+                    <div class="evidence">
+                        <strong>C2「正结果」</strong> 冻结 VLA 末 token 携带 scene-specific、因果验证的选择信号——三次独立复现，CI 全部排除 0（§9）。
+                    </div>
+                    <div class="evidence">
+                        <strong>C3「负结果」</strong> matched 容量下整段 3086-token 序列 CI 支持地劣于自己的末行——"more context hurts"（§6）。
+                    </div>
+                    <div class="evidence">
+                        <strong>C4「边界判定」</strong> power 0.80 的 incumbent test：表征增加信号但不足以取代 tuned geometry baseline；selector-loss trade 同场前瞻 refute（§8）。负结果按预注册合约呈现为贡献。
+                    </div>
+                </div>
+                <h3>Claims 红绿灯（全部已结案）</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Claim</th>
+                                <th>状态</th>
+                                <th>证据</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>L3 carries causal scene-specific selection signal</td>
+                                <td><span class="badge green">结案 ✓</span></td>
+                                <td>FM1 M3 + FN1 N2 + ablations（双 cohort）</td>
+                            </tr>
+                            <tr>
+                                <td>Full sequence worse than last token</td>
+                                <td><span class="badge green">结案 ✓</span></td>
+                                <td>FM1 M1</td>
+                            </tr>
+                            <tr>
+                                <td>Selector-loss gradient geometry（saturate vs vanish）</td>
+                                <td><span class="badge green">结案 ✓</span></td>
+                                <td>E0 contract + FN0 conformance（24.9 vs 1.3×10⁻⁶⁰）</td>
+                            </tr>
+                            <tr>
+                                <td>Efficiency（1.19ms/3.5MB deployed；47× vs FULL）</td>
+                                <td><span class="badge green">结案 ✓</span></td>
+                                <td>FN0 conformance / FM1 gpu_gate</td>
+                            </tr>
+                            <tr>
+                                <td>Beats geometry baseline at power 0.80</td>
+                                <td><span class="badge red">否定结案（=C4 branch B）</span></td>
+                                <td>FN1 N1（等价，非劣亦非优）</td>
+                            </tr>
+                            <tr>
+                                <td>Selector loss buys top-1 w/o selling regret</td>
+                                <td><span class="badge red">否定结案</span></td>
+                                <td>FN1 N3</td>
+                            </tr>
+                            <tr>
+                                <td>Sealed-cohort confirmation</td>
+                                <td><span class="badge amber">不存在（条件未触发）</span></td>
+                                <td>无 winner → 35 场景永久封存，作为 rigor 证据写入 §5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout warn">
+                    <strong>唯一待用户裁决的 framing 决定（08-09 挂起，写作时解决）：</strong>
+                    legacy 基线在正文的位置。用户直觉：headline 阶梯只放 random 0.0593/12.5% → NULL 0.0450/63.7% → L3 0.0321/74.9%（"random = raw Alpamayo, no selector"），legacy 移入 §6.3；已记录的反对意见：legacy 是预注册的 Q1 primary comparison，从 headline 拿掉会被 reviewer 发现且与 prereg 卖点自相矛盾——建议 legacy 保留在正文（可移至 boundary-experiment 小节）但绝不删除。当前稿件<strong>处处包含</strong> legacy（N1/N4 宏、fig_results 行），后续动作只能是重定位。若阶梯升为 headline 表,需给 make_numbers.py 补 RandomPick 宏（0.0593 目前是 ad hoc 计算）。
+                </div>
+            </section>
+
+            <section class="section" id="wote">
+                <h2>12. 与 WoTE 的定位：同一插槽、相反机制、零数字比较</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>维度</th>
+                                <th>WoTE（ICCV'25, arXiv:2504.01941）— 仅概念定位</th>
+                                <th>SafeWorld（本文）</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>在线评估机制</td>
+                                <td><strong>Explicit imagination</strong>：轨迹先行（256 K-Means anchors），BEV world model 以之为条件做 2-step 自回归推演（t+2s/t+4s），reward model 消费 [current, t+2s, t+4s]。</td>
+                                <td><strong>Amortized consequence knowledge</strong>：后果知识在训练期经辅助头压入读取器；推理路径 0 步 rollout；deletion test 证明 score 与后果头 bit-无关。</td>
+                            </tr>
+                            <tr>
+                                <td>Scene representation</td>
+                                <td>purpose-trained sensor-derived BEV tokens。</td>
+                                <td>免费副产品：frozen 10B VLA prefill 的末 token（生成候选的同一次前向）。</td>
+                            </tr>
+                            <tr>
+                                <td>监督</td>
+                                <td>imitation + NC/DAC/TTC/Comfort/EP simulation rewards。</td>
+                                <td>单一 AlpaSim official scene score（anti-gaming：submetric 禁止重组）。</td>
+                            </tr>
+                            <tr>
+                                <td>论文中的呈现</td>
+                                <td colspan="2"><strong>用户指令（08-09，已执行，勿回退）</strong>：WoTE 只出现在 Related Work / teaser 概念对比；其实验测量数字（延迟等）不进任何表格、图或正文比较。架构设计事实（256 anchors、2-step imagination）可以引用。</td>
+                            </tr>
+                            <tr>
+                                <td>谱系陈述（Discussion）</td>
+                                <td colspan="2">explicit ↔ amortized 是一条谱系；中间点（score 消费 predicted future）无人系统扫过——作为 future work 写出，即 §16 W0 的动机。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section" id="history">
+                <h2>13. 证据时间线（压缩版）</h2>
+                <div class="timeline">
+                    <div><strong>T26G-0 → B/C/D：</strong>L3 是 98.2% group offset → 分解修复；compressed-L2 关闭（内容负贡献）；bounded residual 修复梯度冲突但 endpoint-neutral。"better ranker ≠ better selector" 首见。</div>
+                    <div><strong>E0/E1：</strong>selector loss 机械推导（τ=0.043, coef 0.026）；E_SEL_L3_CONS 8/10 门，首个同过 gate 1+2 的臂；E6 = scene value 第一次 CI 支持。</div>
+                    <div><strong>F0/FP0/FR0/FS0：</strong>历史 full-L2 闭包审计四连——replay 非 bit-exact、promoted-B3 closure 物理删除 → 催生 prospective same-prefill 协议。</div>
+                    <div><strong>FA0/FA1/FA1A/FA2：</strong>新采集协议、smoke 隔离、<strong>173 场景 prospective cohort</strong>（519 full-L2，SHA 唯一，L3==L2[-1] bit-exact），零缺陷冻结。</div>
+                    <div><strong>FM0/FM1（08-03）：</strong>matched FULL/LASTTOKEN/NULL/legacy 预注册 + 执行。M1 关闭 reader 线；M3 = scene value 第一次前瞻复现。</div>
+                    <div><strong>FN0（08-03）：</strong>功效解析 N=466/power 0.80；Q1/Q2 预注册；两个终态写死。</div>
+                    <div><strong>FN-A（08-04→08-09）：</strong>352 场景扩展采集，L3-row-only，labels 内联，零缺陷。</div>
+                    <div><strong>FN1（08-09）：</strong>525 场景终审。Q1 否（winner's-curse 证实）、Q2 否（trade 反向）、N2 最强复现。<strong>双线关闭，程序实验部分终结。</strong></div>
+                    <div><strong>08-09 夜：</strong>论文 branch B 切换、547 宏零占位、fig_results 数据行更新。<strong>当前：定稿冲刺 → 08-28 提交。</strong></div>
+                </div>
+            </section>
+
+            <section class="section" id="interpretation">
+                <h2>14. 当前科学解释</h2>
+                <div class="split">
+                    <div class="card">
+                        <h3>已经证明（全部 CI 支持、预注册）</h3>
+                        <ul>
+                            <li>L3 scene value：真实、因果、scene-specific，三次复现（E6/M3/N2），效应随功效增强。</li>
+                            <li>整段序列在 matched 容量下劣于末 token（M1，双 primary）。</li>
+                            <li>selector-loss trade 在部署规模是净损失（N3）。</li>
+                            <li>L3 与 tuned geometry incumbent 在两个 primary 上统计等价（N1，power 0.80）；pairwise ranking 上 L3 CI 支持地更强。</li>
+                            <li>后果知识可被摊销进 1.7M/1.19ms/3.5MB 的头（deletion test 通过）。</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>已经否定 / 永不再测</h3>
+                        <ul>
+                            <li>FULL reader 增益（关闭）；compressed-L2 V1（关闭）；E1 selector loss 部署价值（关闭）。</li>
+                            <li>历史 366-group cohort 的 full-L2 复原（物理不可能，FS0）。</li>
+                            <li>"L3 优于 legacy" 的 promotion（FN1 终审否定；35 sealed 永久封存）。</li>
+                        </ul>
+                        <h3>边界之外（新预注册才可触碰）</h3>
+                        <ul>
+                            <li>预测接回打分路径（W0 探索线，§16）。</li>
+                            <li>full sequence 对<strong>生成式/dynamics</strong>头的价值（FM1 只关闭了判别式任务）。</li>
+                            <li>K≫8、多 VLA、多 simulator 的外推。</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="callout purple">
+                    <strong>一句话的领域启示（论文 Discussion 的姿态）：</strong>
+                    选择增益在强生成器 + K=8 下的诚实尺度就是百分之零点几的 regret——这正是 CI、功效解析与预注册必要的原因；本文把"表征重用何时值得"的答案从 anecdote 变成了带边界的测量。
+                </div>
+            </section>
+
+            <section class="section" id="todo">
+                <h2>15. 论文收尾清单与禁止事项</h2>
+                <div class="split">
+                    <div class="card">
+                        <h3>写作会话待办（per README + 08-09 记录）</h3>
+                        <ul>
+                            <li>bib：TODO-VERIFY 条目核实（WoTE 引用信息、Alpamayo public cite）。</li>
+                            <li>supp：E1 internal-replication 数字回填；negatives/registry 值 re-pull。</li>
+                            <li>匿名化决定：<code>\simname</code>/<code>\vlaname</code> 一行宏（AlpaSim/Alpamayo 是否露名）。</li>
+                            <li>legacy 定位裁决（§11 的挂起决定）；若阶梯升 headline，补 RandomPick 宏。</li>
+                            <li><code>fig4_ablations</code> 尚无 <code>--fn1</code> 支持（现仅 FM1 消融）——决定是否补 525 场景消融面板。</li>
+                            <li><code>figure_prompts.html</code> 与 <code>safeworld_figures.pptx</code> 仍是 v1，figs v2 获批后再生成。</li>
+                            <li>页数裁剪（图已入稿后）。</li>
+                            <li>时间线：08-12 冲刺 → 08-21 注册 → 08-25 内部定稿 → 08-28 AoE 提交。</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>禁止事项（合约性）</h3>
+                        <ul>
+                            <li>不打开 35 sealed scenes——永远。</li>
+                            <li>不重跑/重解释任何已终审阶段（FM1/FN1 结果按 lock 呈现）。</li>
+                            <li>不删除 FA2/FN-A 冻结 payload（W0 只读依赖它们）。</li>
+                            <li>不把 WoTE 实验数字带回论文任何位置。</li>
+                            <li>不从论文口径声称 public-benchmark SOTA（内部 official score，无 NavSim/Bench2Drive 可比性——Discussion 直说）。</li>
+                            <li>数字一律走 <code>make_numbers.py</code>，不手抄。</li>
+                            <li>任何新实验（含 W0 若要"转正"）= 新的独立预注册研究。</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="callout danger">
+                    <strong>缺陷账本（保留在 supp 的 methodological honesty 素材）：</strong>
+                    FA/FN 线共 4 起 phase/adaptation-boundary codegen 缺陷（FA1A 两起、FN-A post_eval 一起、FN1 all-tie 一起），全部被防御性检查在污染结果前拦截，全部零科学影响、全部入档。共同教训：ruff F821 前置 + 合成一致性测试必须覆盖 all-tie batch 与 resume 边界。
+                </div>
+            </section>
+
+            <section class="section" id="w0">
+                <h2>16. W0 探索线（论文外，纯探索）：把预测接回打分路径</h2>
+                <p>FN1 之后唯一存活的机制假设：L3 的信息是真的（N2 三连），用法是问题——从未试过的是 <strong>prediction ON the inference path</strong>，即 WoTE 形式的显式推演套在 L3 之上（dynamics head T(z_t, traj segment) 生成未来场景状态，score head 消费 [z_t, ẑ_{t+2}, ẑ_{t+4}] + 对应时刻 waypoints）。这故意<strong>不通过</strong> deletion test——它是 08-04 对话里命名的 explicit↔amortized 谱系的未扫中段。</p>
+                <div class="three-col">
+                    <div class="mini">
+                        <b>硬约束（用户 08-09/10）</b>
+                        纯探索；同 repo；<strong>零新数据下载</strong>；不触碰 WACV 冻结数据/架构/合约；MB 级 run dir 走系统盘。
+                    </div>
+                    <div class="mini">
+                        <b>数据已足够</b>
+                        12,600 条已评分候选的 ASL 含闭环未来（ego+traffic 逐时刻）→ 任意时间戳 future-state target 可抽取；无 future-L3 ground truth（F0 链已证不可能），可行 target = ASL 派生 scene state / 学习式 state code / end-to-end。
+                    </div>
+                    <div class="mini">
+                        <b>执行状态（08-10）</b>
+                        W0 study dir 已建（design 先行 + amendment 001：keyframes V2={3.2, 6.3}s、V3={2.1, 4.2, 6.3}s，均为精确 tick）；Step 0 probe PASS；Step 1 u-extraction（12,600 ASLs，55-d/kf）+ L3/traj cache 进行中；Step 2 oracle-gate（ORACLE_V2/V3 vs AMORT matched arms，FN1 folds 只读复用，bootstrap seed 20260810）脚本就绪。
+                    </div>
+                </div>
+                <div class="callout warn">
+                    <strong>与论文的关系：</strong>
+                    W0 在 Discussion 里只以一句 future-work 谱系陈述出现；其任何结果都不进本次投稿。若 oracle gate 显示 headroom，"转正"需要全新预注册（FA0/FA1 boundary clause）。开放的题外之问：FM1 只关闭了 full sequence 的判别式用途——它对 dynamics 头是否有用，FA2 的 519 个 full-L2 groups 可零新采集地回答。
+                </div>
+            </section>
+
+            <section class="section" id="handoff">
+                <h2>17. 新会话与 authority order</h2>
+                <h3>当前 authority order</h3>
+                <ol>
+                    <li><strong>FN1 final record</strong>：<code>artifacts/safeworld_t26g_fn1_l3_pathway_consolidation_experiment/20260809T173120Z</code>（211 outputs、analysis/promotion_gate/gpu_gate、mid-run repair 001）。</li>
+                    <li><strong>FN-A frozen dataset</strong>：<code>…/safeworld_t26g_fna_extension_acquisition/20260803T215243Z</code>（<code>results/t26g_fna_extension_dataset.json</code> + 3 audits）。</li>
+                    <li><strong>FN0 preregistration</strong>：<code>…/safeworld_t26g_fn0_l3_pathway_consolidation_preregistration/20260803T210139Z</code>（power/gates/prompts；pool 算术以 FN-A 修正为准）。</li>
+                    <li><strong>FM1 final record</strong>：<code>…/safeworld_t26g_fm1_full_l2_matched_selector_experiment/20260803T132326Z</code>。</li>
+                    <li>FA2 freeze → FA1A → FA1 → FS0/FR0/FP0/F0B/F0 → E1/E0 → D/C/B/A。</li>
+                </ol>
+                <h3>数字取用（不要手抄）</h3>
+                <div class="formula">ART=/home/qiren/alpasafe/safeworld-alpamayo/artifacts
+FM1: $ART/safeworld_t26g_fm1_full_l2_matched_selector_experiment/20260803T132326Z/results/t26g_fm1_analysis.json
+FN1: $ART/safeworld_t26g_fn1_l3_pathway_consolidation_experiment/20260809T173120Z/results/t26g_fn1_analysis.json
+FN0 power: $ART/safeworld_t26g_fn0_l3_pathway_consolidation_preregistration/20260803T210139Z/contracts/t26g_fn0_power_and_sample_size_contract.json
+FN0 conformance(延迟/显存): 同记录 results/t26g_fn0_conformance_and_budget.json
+E0 selector loss: $ART/safeworld_t26g_e0_top_of_list_selector_resolution/20260727T042825Z/contracts/t26g_e0_selector_loss_contract.json
+论文: /home/qiren/alpasafe/paper/wacv2027/  (make_numbers.py → sec/numbers.tex, 547 macros)</div>
+                <div class="callout">
+                    <strong>最小可继续状态：</strong>
+                    <code>FM1 + FN1 both closed per contract; 35 sealed scenes sealed forever (no FN2); paper draft branch-B complete with 547 auto macros; next actions are writing-only (bib/supp/anonymization/legacy-positioning/page-trim) toward 2026-08-28 AoE; W0 exploration is separate, read-only on frozen payloads, and out of the paper.</code>
+                </div>
+                <p class="source-note">本 v8 基于：FN1/FM1/FN0/FN-A final records 与 analysis JSON（数字经 <code>sec/numbers.tex</code> 自动宏与 <code>t26g_fn1_analysis.json</code> 直接读取交叉核对）、E0 selector-loss contract（公式逐字段核对）、WACV 稿件 README 与 outline、以及 2026-08-09/10 的用户指令记录（WoTE 数字禁令、legacy framing 挂起决定、W0 约束）。v7 的历史章节（FA 采集细节、闭包审计全文）不再重复，需要时查 v7 或对应 record。</p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

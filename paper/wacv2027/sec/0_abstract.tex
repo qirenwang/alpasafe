@@ -1,0 +1,18 @@
+\begin{abstract}
+End-to-end planners emit $K$ candidate trajectories per decision, yet deployment executes exactly one.
+The community's reporting convention, minADE@$K$, silently assumes an oracle makes that choice, so the gap between reported potential and deployed behavior---the \emph{selected regret}---goes largely unmeasured.
+Prior online trajectory evaluation closes this gap with explicit imagination: a purpose-trained BEV world model rolls out every candidate's future before scoring it.
+We show that, for a strong driving VLA, the required scene knowledge has \emph{already been computed} by the generator itself.
+The last hidden token of the frozen \vlaname{} (10B) prompt prefill---a byproduct of producing the candidates---read by a \EffParams-parameter decomposed value head in \EffLtMedianMs~ms, carries a causally verified, prospectively replicated selection signal: on \nScenes{} untouched scenes, selected regret improves by \MThreeKEightRegretCI{} and tie-aware top-1 agreement by \MThreeKEightTopOneCI{} (95\% CIs) over a parameter-matched scene-blind control, and wrong-scene and zeroed-representation ablations degrade selection.
+Surprisingly, reading the \emph{full} 3{,}086-token prefill sequence is CI-supported \emph{worse} than its own last row under matched capacity (regret \MOneKEightRegretCI; top-1 \MOneKEightTopOneCI).
+\iffnonedone
+  \iffnonepass
+    In an adequately powered ($1-\beta=0.80$, $N=\FnNTotal$) preregistered comparison, the representation-based selector further surpasses a trained trajectory-geometry baseline on selected regret (\NOneKEightRegretCI) without ceding top-1 agreement.
+  \else
+    In an adequately powered ($1-\beta=0.80$, $N=\FnNTotal$) preregistered comparison against a trained trajectory-geometry baseline, the representation adds signal but does not displace the tuned incumbent (regret \NOneKEightRegretCI), a boundary result that delimits when representation reuse pays.
+  \fi
+\else
+  A preregistered comparison against a trained trajectory-geometry incumbent, powered at $1-\beta=0.80$ for the observed effect ($N=\FnNTotal$ scenes), completes the program. % pre-FN1 placeholder sentence
+\fi
+All studies are preregistered with outcome-blind frozen gates, analyzed with paired scene bootstrap CIs, and guarded by a sealed, never-opened confirmation cohort.
+\end{abstract}

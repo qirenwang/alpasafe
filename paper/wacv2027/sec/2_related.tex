@@ -1,0 +1,21 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Online trajectory evaluation.}
+WoTE~\cite{li2025wote} is the closest prior line: alongside an end-to-end planner emitting 256 K-Means anchor trajectories, it trains a BEV world model that imagines each candidate's future BEV state two steps ahead ($t{+}2$s, $t{+}4$s) and scores the imagined futures with imitation plus simulation-derived submetric rewards (collision, drivable area, time-to-collision, comfort, progress).
+Rule-based scorers such as PDM~\cite{dauner2023pdm} evaluate candidates with hand-built kinematic forecasts, and Hydra-MDP-style distillation~\cite{li2024hydramdp} amortizes a rule-based scorer into the planner during training.
+We occupy the far end of this spectrum: \emph{zero} inference-time rollout steps and \emph{zero} purpose-trained dynamics---the consequence knowledge is read from representations the frozen generator computes anyway, and consequence prediction appears only as an auxiliary training signal whose deletion provably does not change the deployed scores (\cref{sec:head}).
+Positioning the two ends as \emph{explicit imagination} versus \emph{amortized consequence knowledge} makes the trade explicit; intermediate designs (scoring a predicted future) remain untested and we discuss them in \cref{sec:discussion}.
+
+\paragraph{End-to-end planning and multi-modal output.}
+UniAD~\cite{hu2023uniad}, VAD~\cite{jiang2023vad}, TransFuser~\cite{chitta2022transfuser}, and probabilistic-planning variants such as VADv2~\cite{chen2024vadv2} report minADE/minFDE-style metrics or best-of-$K$ closed-loop scores, inheriting the oracle-selector assumption from the trajectory-prediction literature~\cite{chai2019multipath}.
+Closed-loop benchmarks~\cite{caesar2021nuplan,dauner2024navsim,jia2024bench2drive} score the executed trajectory, but public leaderboards rarely isolate how much of the headroom between executed and best-of-$K$ is recoverable by a better selector.
+Our selected-regret endpoint measures exactly that recoverable gap under the deployed decision rule.
+
+\paragraph{Frozen foundation-model representations.}
+Linear probes~\cite{alain2016probes} and frozen-backbone transfer~\cite{lu2022fpt} established that pretrained representations support downstream readout without finetuning; driving VLAs~\cite{tian2024drivevlm,hwang2024emma,alpamayo2025} are typically consumed through their \emph{outputs} (trajectories, language) rather than their internal states.
+To our knowledge this is the first work to (i) reuse a production driving VLA's internal prefill state for closed-loop trajectory selection, (ii) tie the reused representation bit-exactly to the candidate-generating forward pass, and (iii) support the reuse claim with causal ablations and prospective replication rather than correlational probing alone.
+
+\paragraph{Evaluation rigor.}
+Preregistration and adequately powered confirmatory designs are standard in clinical research and have been advocated for ML~\cite{vanmiltenburg2021preregistering,raff2019reproducibility}, but remain rare in autonomous-driving evaluation, where small effects on strong generators are easily manufactured---or missed---by analysis flexibility.
+Every confirmatory claim in this paper is backed by a preregistered design with frozen gates, locked predictions, and paired scene bootstrap CIs~\cite{efron1994bootstrap}; \cref{sec:program} describes the program and \cref{tab:ladder} its cohort ladder.

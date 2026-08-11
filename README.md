@@ -44,8 +44,8 @@ export PATH="$HOME/.local/bin:$PATH"
 ### 2. Set up the environment
 
 ```bash
-uv venv a1_5_venv
-source a1_5_venv/bin/activate
+uv venv as_venv
+source as_venv/bin/activate
 uv sync --active
 ```
 

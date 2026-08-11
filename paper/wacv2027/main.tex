@@ -1,0 +1,63 @@
+% WACV 2027 — SafeWorld / AlpaSafe trajectory-selector paper
+% Based on the official WACV 2027 template (ICCV 2025 kit); upload this file
+% over the template's main.tex on Overleaf (see README.md for the file map).
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
+% \usepackage[review,algorithms]{wacv}      % REVIEW version, algorithms track
+\usepackage[review,applications]{wacv}      % REVIEW version, applications track
+% \usepackage[review,datasets]{wacv}        % REVIEW version, datasets track
+% \usepackage{wacv}                         % CAMERA-READY version
+%\usepackage[pagenumbers]{wacv}             % force page numbers, e.g. arXiv
+
+\input{preamble}
+
+\definecolor{wacvblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=wacvblue]{hyperref}
+\usepackage[capitalize]{cleveref} % must load after hyperref
+
+%%%%%%%%% PAPER ID  - PLEASE UPDATE
+\def\wacvPaperID{*****} % *** Enter the WACV Paper ID here
+\def\confName{WACV}
+\def\confYear{2027}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FN1 OUTCOME SWITCHES — flip after the FN1 study finalizes (~2026-08-10),
+% then regenerate sec/numbers.tex:  python3 make_numbers.py --fn1 <analysis.json>
+%   \fnonedonetrue   -> FN1 numbers are available (replaces design-only text)
+%   \fnonepasstrue   -> FN1 promotion gates passed (branch A);
+%                       leave false for the boundary-result branch B
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\iffnonedone \fnonedonetrue
+\newif\iffnonepass \fnonepassfalse
+
+\input{sec/numbers} % AUTO-GENERATED numeric macros — never hand-edit
+
+%%%%%%%%% TITLE
+% Alternatives considered (outline §0):
+%  1. Your Planner Already Knows: Frozen VLA Representations as Amortized
+%     Trajectory Evaluators
+%  3. SafeWorld: Amortized Online Trajectory Evaluation without a World Model
+\title{One Token Is Enough: Trajectory Selection\\ from a Frozen Driving VLA's Prefill State}
+
+%%%%%%%%% AUTHORS - anonymous for review
+\author{Anonymous WACV submission\\
+Paper ID \wacvPaperID}
+
+\begin{document}
+\maketitle
+\input{sec/0_abstract}
+\input{sec/1_intro}
+\input{sec/2_related}
+\input{sec/3_method}
+\input{sec/4_program}
+\input{sec/5_results}
+\input{sec/6_discussion}
+{
+    \small
+    \bibliographystyle{ieeenat_fullname}
+    \bibliography{main}
+}
+
+\end{document}
