@@ -1,0 +1,202 @@
+[
+  {
+    "tag": "FA2_g0_c0",
+    "group_id": "clipgt-026d6a39-bd8f-4175-bc61-fe50ed0403a3@A",
+    "candidate_index": 0,
+    "official_score": 0.9784538111074473,
+    "asl_path": "/storage/alpasafe/safeworld-alpamayo/payloads/safeworld_t26g_fa2_prospective_full_l2_acquisition/20260730T190521Z/scoring_rollouts/r0007_A_c0/rollouts/clipgt-026d6a39-bd8f-4175-bc61-fe50ed0403a3/fb8477fa-8e1d-11f1-85dc-2f1bbe74466e/rollout.asl",
+    "sha_match": true,
+    "metadata": {
+      "session_uuid": "fb8477fa-8e1d-11f1-85dc-2f1bbe74466e",
+      "scene_id": "clipgt-026d6a39-bd8f-4175-bc61-fe50ed0403a3",
+      "n_sim_steps": 80,
+      "start_timestamp_us": 2313930762867,
+      "control_timestep_us": 100000,
+      "force_gt_duration_us": 1700000
+    },
+    "decision_ts_us": 2313932620612,
+    "decision_matches_manifest": true,
+    "force_gt_matches_manifest": true,
+    "n_driver_requests": 63,
+    "n_actor_pose_frames": 82,
+    "frame_dt_unique_us": [
+      100000,
+      157745
+    ],
+    "first_frame_rel_decision_us": -1857745,
+    "last_frame_rel_decision_us": 6300000,
+    "n_post_decision_frames": 64,
+    "post_decision_has_ego_all": true,
+    "keyframes": {
+      "2.1": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 29,
+        "n_other_within_50m": 2
+      },
+      "3.2": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 32,
+        "n_other_within_50m": 7
+      },
+      "4.2": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 29,
+        "n_other_within_50m": 7
+      },
+      "6.3": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 19,
+        "n_other_within_50m": 6
+      },
+      "6.4": {
+        "exact": false,
+        "nearest_off_us": 100000
+      }
+    },
+    "ego_t0_n_steps": 64,
+    "ego_t0_final_xy": [
+      64.4886,
+      -0.5202
+    ]
+  },
+  {
+    "tag": "FA2_hardfail",
+    "group_id": "clipgt-05ecbbf5-d88c-41b7-97f2-f4ac2615a8c9@A",
+    "candidate_index": 0,
+    "official_score": 0.0,
+    "asl_path": "/storage/alpasafe/safeworld-alpamayo/payloads/safeworld_t26g_fa2_prospective_full_l2_acquisition/20260730T190521Z/scoring_rollouts/r0027_A_c0/rollouts/clipgt-05ecbbf5-d88c-41b7-97f2-f4ac2615a8c9/2886fede-8e1f-11f1-a735-8353c5fe5221/rollout.asl",
+    "sha_match": true,
+    "metadata": {
+      "session_uuid": "2886fede-8e1f-11f1-a735-8353c5fe5221",
+      "scene_id": "clipgt-05ecbbf5-d88c-41b7-97f2-f4ac2615a8c9",
+      "n_sim_steps": 80,
+      "start_timestamp_us": 399445901212,
+      "control_timestep_us": 100000,
+      "force_gt_duration_us": 1700000
+    },
+    "decision_ts_us": 399447804413,
+    "decision_matches_manifest": true,
+    "force_gt_matches_manifest": true,
+    "n_driver_requests": 63,
+    "n_actor_pose_frames": 82,
+    "frame_dt_unique_us": [
+      100000,
+      203201
+    ],
+    "first_frame_rel_decision_us": -1903201,
+    "last_frame_rel_decision_us": 6300000,
+    "n_post_decision_frames": 64,
+    "post_decision_has_ego_all": true,
+    "keyframes": {
+      "2.1": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 8,
+        "n_other_within_50m": 2
+      },
+      "3.2": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 10,
+        "n_other_within_50m": 2
+      },
+      "4.2": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 10,
+        "n_other_within_50m": 2
+      },
+      "6.3": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 9,
+        "n_other_within_50m": 2
+      },
+      "6.4": {
+        "exact": false,
+        "nearest_off_us": 100000
+      }
+    },
+    "ego_t0_n_steps": 64,
+    "ego_t0_final_xy": [
+      19.3664,
+      -5.2199
+    ]
+  },
+  {
+    "tag": "FNA_g0_c0",
+    "group_id": "clipgt-023b7fcc-671c-40e3-9bd2-c66b0b073fbc@A",
+    "candidate_index": 0,
+    "official_score": 0.0,
+    "asl_path": "/storage/alpasafe/safeworld-alpamayo/payloads/safeworld_t26g_fna_extension_acquisition/20260803T215243Z/scoring_rollouts/r0396_A_c0/rollouts/clipgt-023b7fcc-671c-40e3-9bd2-c66b0b073fbc/ee815bdc-91dc-11f1-b114-cbd5688fdbbb/rollout.asl",
+    "sha_match": true,
+    "metadata": {
+      "session_uuid": "ee815bdc-91dc-11f1-b114-cbd5688fdbbb",
+      "scene_id": "clipgt-023b7fcc-671c-40e3-9bd2-c66b0b073fbc",
+      "n_sim_steps": 80,
+      "start_timestamp_us": 180833912642,
+      "control_timestep_us": 100000,
+      "force_gt_duration_us": 1700000
+    },
+    "decision_ts_us": 180835805534,
+    "decision_matches_manifest": true,
+    "force_gt_matches_manifest": true,
+    "n_driver_requests": 63,
+    "n_actor_pose_frames": 82,
+    "frame_dt_unique_us": [
+      100000,
+      192892
+    ],
+    "first_frame_rel_decision_us": -1892892,
+    "last_frame_rel_decision_us": 6300000,
+    "n_post_decision_frames": 64,
+    "post_decision_has_ego_all": true,
+    "keyframes": {
+      "2.1": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 100,
+        "n_other_within_50m": 31
+      },
+      "3.2": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 100,
+        "n_other_within_50m": 30
+      },
+      "4.2": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 96,
+        "n_other_within_50m": 29
+      },
+      "6.3": {
+        "exact": true,
+        "ego_present": true,
+        "n_actors": 86,
+        "n_other_within_50m": 22
+      },
+      "6.4": {
+        "exact": false,
+        "nearest_off_us": 100000
+      }
+    },
+    "ego_t0_n_steps": 64,
+    "ego_t0_final_xy": [
+      73.5016,
+      0.2129
+    ],
+    "label_npz_keys": [
+      "decision_latest_timestamp_us",
+      "future_ego_states_ego_t0",
+      "future_valid_steps"
+    ],
+    "label_future_shape": [
+      8
+    ]
+  }
+]
