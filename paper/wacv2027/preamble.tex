@@ -1,22 +1,19 @@
-% Preamble.
-% On Overleaf: the WACV template ships its own preamble.tex. Either replace it
-% with this file, or keep the template's and append only the block marked
-% "PAPER-SPECIFIC ADDITIONS" below (everything above that block is standard
-% template fare; duplicated \usepackage of the same package without clashing
-% options is harmless).
+%
+% --- inline annotations
+%
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\todo}[1]{{\color{red}#1}}
+\newcommand{\TODO}[1]{\textbf{\color{red}[TODO: #1]}}
+% --- disable by uncommenting
+% \renewcommand{\TODO}[1]{}
+% \renewcommand{\todo}[1]{#1}
 
-% ---- standard template packages ----
-\usepackage{graphicx}
-\usepackage{amsmath,amssymb}
-\usepackage{xcolor}
-\usepackage{subcaption}
 
-% ============ PAPER-SPECIFIC ADDITIONS (required by sec/*.tex) ============
-\usepackage{booktabs}   % \toprule/\midrule/\bottomrule in all tables
-\usepackage{multirow}
+%%%%%%%%% ALPASAFE ADDITIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% (wacv.sty already provides times/xcolor/graphicx/amsmath/amssymb/booktabs/
+%  subcaption — no extra packages needed here; cleveref loads in main.tex
+%  after hyperref.)
 
-% Editorial marks — must render empty/resolved before camera-ready.
-\newcommand{\todo}[1]{{\color{red}[TODO: #1]}}
 % Placeholder emitted by make_numbers.py for FN1 endpoints until the FN1
 % analysis JSON exists; grep for \fnpending before submitting.
 \newcommand{\fnpending}{{\color{red}\textbf{[FN1]}}}
@@ -25,7 +22,18 @@
 % simulator / generator names for review.
 \newcommand{\simname}{AlpaSim}          % internal closed-loop simulator
 \newcommand{\vlaname}{Alpamayo-1.5}     % frozen 10B driving VLA generator
-\newcommand{\headname}{SafeWorld}       % the selector head / method name
+\newcommand{\headname}{AlpaSafe}        % the auditor head / method name
+
+% Tighter run-in paragraph headings: the article-class default (3.25ex plus
+% 1ex) reads as a full blank line under flushbottom stretch; keep the bold
+% run-in style but with a small, nearly rigid gap. Applies to every
+% \paragraph in the paper uniformly.
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {1.3ex \@plus .3ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\makeatother
 
 % Notation shorthands
 \newcommand{\regret}{\mathrm{regret}}
@@ -33,3 +41,4 @@
 \newcommand{\Lfull}{\textsc{Full}}
 \newcommand{\Lnull}{\textsc{Null}}
 \newcommand{\Lgeo}{\textsc{Geometry}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

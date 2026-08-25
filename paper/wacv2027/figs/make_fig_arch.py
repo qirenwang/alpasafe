@@ -4,7 +4,7 @@
 Story, left to right: multi-view cameras + driving prompt feed the frozen
 driving VLA; ONE forward pass yields both the K=8 sampled trajectories
 (drawn on a perspective road) and the prefill hidden states whose last
-token h is the only representation consumed. The SafeWorld head (stacked
+token h is the only representation consumed. The AlpaSafe head (stacked
 x8, shared weights) scores each candidate; the bounded residual alone
 selects; the chosen trajectory is executed (road echo, selected in blue).
 Params/latency/memory annotated from the locked FN0 conformance record.
@@ -83,7 +83,7 @@ def main():
     road(ax, 39.5, 40, 17, 48, n=8)
     arrow(ax, 36.4, 74, 39.1, 72)
 
-    # ================= D: SafeWorld head (stacked x8) =================
+    # ================= D: AlpaSafe head (stacked x8) =================
     for off in (2, 1):
         rbox(ax, 60 + off * 1.1, 14 - off * 2.2, 18, 79, fc="#f3f2ef",
              ec=FAINT, lw=0.6, rounding=2.0)
@@ -91,7 +91,7 @@ def main():
          rounding=2.0, shadow=True)
     ax.text(80.0, 96.0, "$\\times 8$", fontsize=6.6, color=MUTED,
             ha="center", va="center", style="italic")
-    ax.text(69, 88.5, "SafeWorld head", fontsize=6.2, color=INK, ha="center",
+    ax.text(69, 88.5, "AlpaSafe head", fontsize=6.2, color=INK, ha="center",
             va="center", fontweight="bold")
     ax.text(69, 84.2, "shared weights · one pass per candidate", fontsize=4.7,
             color=MUTED, ha="center", va="center", style="italic")

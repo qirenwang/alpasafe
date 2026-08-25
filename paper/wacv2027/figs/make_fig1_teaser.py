@@ -82,7 +82,7 @@ def main():
     yb = 23
     ym_b = lane_flow(ax, yb, "frozen driving\nVLA (10B)", gen_blue=True, cap_x=38.0)
     snowflake(ax, 32.2, yb + 12.2, r=1.25, ar=AR)
-    # branch: the free last token -> tiny value head
+    # branch: the free last token -> tiny trajectory auditor
     last_x = token_strip(ax, 20, 8.5, 13, 3.6, n=10)
     ax.text(26.5, 4.6, "$h$ = last prefill token (free)", fontsize=4.6,
             color=BLUE, ha="center", va="center")
@@ -90,7 +90,7 @@ def main():
           color=BLUE_EDGE)
     vgrad(ax, 44, 7.5, 20, 11, "#fbeae3", "#f5d2c2", ec=WARM_EDGE, lw=0.9,
           rounding=1.2)
-    ax.text(54, 13, f"value head · {params_m:.1f}M\n(the only trained part)",
+    ax.text(54, 13, f"trajectory auditor · {params_m:.1f}M\n(the only trained part)",
             fontsize=4.8, color=INK, ha="center", va="center", zorder=5,
             linespacing=1.25)
     arrow(ax, 34.6, 10.3, 43.4, 11.5, color=BLUE_EDGE)

@@ -1,165 +1,415 @@
-% Bibliography for the SafeWorld WACV 2027 submission.
+% Bibliography for the AlpaSafe WACV 2027 submission.
 % Entries marked TODO-VERIFY were written from working knowledge and MUST be
 % checked against the actual papers (authors/venue/year/pages) in a citation
 % pass before submission. WoTE identity (arXiv:2504.01941, ICCV 2025) was
 % fact-checked during preregistration.
+% Venue names are written as braced literals, NOT bare @string macros
+% (bare CVPR/ICCV/PAMI/NIPS were undefined and rendered as empty venues;
+% the local tectonic build additionally mangles @string values, so literals
+% are the portable form). The @string defs below are kept only as a safety
+% net in case a bare identifier slips back in on Overleaf.
+@string{CVPR = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition}}
+@string{ICCV = {Proceedings of the IEEE/CVF International Conference on Computer Vision}}
+@string{PAMI = {IEEE Transactions on Pattern Analysis and Machine Intelligence}}
+@string{NIPS = {Advances in Neural Information Processing Systems}}
 
-@inproceedings{li2025wote,
-  author    = {Yingyan Li and Yuqi Wang and Yang Liu and Jiawei He and Lue Fan and Zhaoxiang Zhang},
-  title     = {End-to-End Driving with Online Trajectory Evaluation via {BEV} World Model},
-  booktitle = {ICCV},
+% -----------------------------------------------------------------------------
+% Driving VLAs and end-to-end planning
+% -----------------------------------------------------------------------------
+
+@inproceedings{shao2024lmdrive,
+  author    = {Hao Shao and Yuxuan Hu and Letian Wang and Guanglu Song and Steven L. Waslander and Yu Liu and Hongsheng Li},
+  title     = {{LMDrive}: Closed-Loop End-to-End Driving with Large Language Models},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {15120--15130},
+  year      = {2024},
+  doi       = {10.1109/CVPR52733.2024.01432},
+  url       = {https://openaccess.thecvf.com/content/CVPR2024/html/Shao_LMDrive_Closed-Loop_End-to-End_Driving_with_Large_Language_Models_CVPR_2024_paper.html}
+}
+
+@inproceedings{tian2024drivevlm,
+  author    = {Xiaoyu Tian and Junru Gu and Bailin Li and Yicheng Liu and Yang Wang and Zhiyong Zhao and Kun Zhan and Peng Jia and Xianpeng Lang and Hang Zhao},
+  title     = {Drive{VLM}: The Convergence of Autonomous Driving and Large Vision-Language Models},
+  booktitle = {Proceedings of the Conference on Robot Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {270},
+  pages     = {4698--4726},
   year      = {2025},
-  note      = {arXiv:2504.01941}
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v270/tian25a.html}
+}
+
+@article{hwang2024emma,
+  author  = {Jyh-Jing Hwang and Runsheng Xu and Hubert Lin and Wei-Chih Hung and Jingwei Ji and Kristy Choi and Di Huang and Tong He and Paul Covington and Benjamin Sapp and Yin Zhou and James Guo and Dragomir Anguelov and Mingxing Tan},
+  title   = {{EMMA}: End-to-End Multimodal Model for Autonomous Driving},
+  journal = {arXiv preprint arXiv:2410.23262},
+  year    = {2024},
+  doi     = {10.48550/arXiv.2410.23262},
+  url     = {https://arxiv.org/abs/2410.23262}
+}
+
+@article{alpamayo2025,
+  author  = {{NVIDIA} and Yan Wang and Wenjie Luo and Junjie Bai and Yulong Cao and Tong Che and Ke Chen and Yuxiao Chen and Jenna Diamond and Yifan Ding and Wenhao Ding and Liang Feng and Greg Heinrich and Jack Huang and Peter Karkus and Boyi Li and Pinyi Li and Tsung-Yi Lin and Dongran Liu and Ming-Yu Liu and Langechuan Liu and Zhijian Liu and Jason Lu and Yunxiang Mao and Pavlo Molchanov and Lindsey Pavao and Zhenghao Peng and Mike Ranzinger and Ed Schmerling and Shida Shen and Yunfei Shi and Sarah Tariq and Ran Tian and Tilman Wekel and Xinshuo Weng and Tianjun Xiao and Eric Yang and Xiaodong Yang and Yurong You and Xiaohui Zeng and Wenyuan Zhang and Boris Ivanovic and Marco Pavone},
+  title   = {Alpamayo-{R1}: Bridging Reasoning and Action Prediction for Generalizable Autonomous Driving in the Long Tail},
+  journal = {arXiv preprint arXiv:2511.00088},
+  year    = {2025},
+  doi     = {10.48550/arXiv.2511.00088},
+  url     = {https://arxiv.org/abs/2511.00088}
 }
 
 @inproceedings{hu2023uniad,
   author    = {Yihan Hu and Jiazhi Yang and Li Chen and Keyu Li and Chonghao Sima and Xizhou Zhu and Siqi Chai and Senyao Du and Tianwei Lin and Wenhai Wang and Lewei Lu and Xiaosong Jia and Qiang Liu and Jifeng Dai and Yu Qiao and Hongyang Li},
-  title     = {Planning-oriented Autonomous Driving},
-  booktitle = {CVPR},
-  year      = {2023}
+  title     = {Planning-Oriented Autonomous Driving},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {17853--17862},
+  year      = {2023},
+  url       = {https://openaccess.thecvf.com/content/CVPR2023/html/Hu_Planning-Oriented_Autonomous_Driving_CVPR_2023_paper.html}
 }
 
 @inproceedings{jiang2023vad,
   author    = {Bo Jiang and Shaoyu Chen and Qing Xu and Bencheng Liao and Jiajie Chen and Helong Zhou and Qian Zhang and Wenyu Liu and Chang Huang and Xinggang Wang},
   title     = {{VAD}: Vectorized Scene Representation for Efficient Autonomous Driving},
-  booktitle = {ICCV},
-  year      = {2023}
-}
-
-% TODO-VERIFY authors/venue (CVPR 2024 E2E challenge report vs arXiv only)
-@article{li2024hydramdp,
-  author  = {Zhenxin Li and Kailin Li and Shihao Wang and Shiyi Lan and Zhiding Yu and Yishen Ji and Zhiqi Li and Ziyue Zhu and Jan Kautz and Zuxuan Wu and Yu-Gang Jiang and Jose M. Alvarez},
-  title   = {Hydra-{MDP}: End-to-end Multimodal Planning with Multi-target Hydra-Distillation},
-  journal = {arXiv:2406.06978},
-  year    = {2024}
-}
-
-@inproceedings{dauner2023pdm,
-  author    = {Daniel Dauner and Marcel Hallgarten and Andreas Geiger and Kashyap Chitta},
-  title     = {Parting with Misconceptions about Learning-based Vehicle Motion Planning},
-  booktitle = {CoRL},
-  year      = {2023}
-}
-
-@inproceedings{dauner2024navsim,
-  author    = {Daniel Dauner and Marcel Hallgarten and Tianyu Li and Xinshuo Weng and Zhiyu Huang and Zetong Yang and Hongyang Li and Igor Gilitschenski and Boris Ivanovic and Marco Pavone and Andreas Geiger and Kashyap Chitta},
-  title     = {{NAVSIM}: Data-Driven Non-Reactive Autonomous Vehicle Simulation and Benchmarking},
-  booktitle = {NeurIPS Datasets and Benchmarks},
-  year      = {2024}
-}
-
-@article{caesar2021nuplan,
-  author  = {Holger Caesar and Juraj Kabzan and Kok Seang Tan and Whye Kit Fong and Eric Wolff and Alex Lang and Luke Fletcher and Oscar Beijbom and Sammy Omari},
-  title   = {nu{P}lan: A closed-loop {ML}-based planning benchmark for autonomous vehicles},
-  journal = {arXiv:2106.11810},
-  year    = {2021}
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages     = {8340--8350},
+  year      = {2023},
+  url       = {https://openaccess.thecvf.com/content/ICCV2023/html/Jiang_VAD_Vectorized_Scene_Representation_for_Efficient_Autonomous_Driving_ICCV_2023_paper.html}
 }
 
 @article{chitta2022transfuser,
   author  = {Kashyap Chitta and Aditya Prakash and Bernhard Jaeger and Zehao Yu and Katrin Renz and Andreas Geiger},
   title   = {Trans{F}user: Imitation with Transformer-Based Sensor Fusion for Autonomous Driving},
-  journal = {IEEE TPAMI},
-  year    = {2022}
+  journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume  = {45},
+  number  = {11},
+  pages   = {12878--12895},
+  year    = {2023},
+  doi     = {10.1109/TPAMI.2022.3200245}
 }
 
-% TODO-VERIFY arXiv id/venue
 @article{chen2024vadv2,
   author  = {Shaoyu Chen and Bo Jiang and Hao Gao and Bencheng Liao and Qing Xu and Qian Zhang and Chang Huang and Wenyu Liu and Xinggang Wang},
   title   = {{VADv2}: End-to-End Vectorized Autonomous Driving via Probabilistic Planning},
-  journal = {arXiv:2402.13243},
-  year    = {2024}
+  journal = {arXiv preprint arXiv:2402.13243},
+  year    = {2024},
+  doi     = {10.48550/arXiv.2402.13243},
+  url     = {https://arxiv.org/abs/2402.13243}
 }
+
+% -----------------------------------------------------------------------------
+% Trajectory generation, scoring, and world-model evaluation
+% -----------------------------------------------------------------------------
+
+@inproceedings{li2025wote,
+  author    = {Yingyan Li and Yuqi Wang and Yang Liu and Jiawei He and Lue Fan and Zhaoxiang Zhang},
+  title     = {End-to-End Driving with Online Trajectory Evaluation via {BEV} World Model},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages     = {27137--27146},
+  year      = {2025},
+  doi       = {10.1109/ICCV55909.2025.02467},
+  url       = {https://openaccess.thecvf.com/content/ICCV2025/html/Li_End-to-End_Driving_with_Online_Trajectory_Evaluation_via_BEV_World_Model_ICCV_2025_paper.html}
+}
+
+@article{li2024hydramdp,
+  author  = {Zhenxin Li and Kailin Li and Shihao Wang and Shiyi Lan and Zhiding Yu and Yishen Ji and Zhiqi Li and Ziyue Zhu and Jan Kautz and Zuxuan Wu and Yu-Gang Jiang and Jose M. Alvarez},
+  title   = {{Hydra-MDP}: End-to-End Multimodal Planning with Multi-Target Hydra-Distillation},
+  journal = {arXiv preprint arXiv:2406.06978},
+  year    = {2024},
+  doi     = {10.48550/arXiv.2406.06978},
+  url     = {https://arxiv.org/abs/2406.06978}
+}
+
+@article{li2025gtrs,
+  author  = {Zhenxin Li and Wenhao Yao and Zi Wang and Xinglong Sun and Joshua Chen and Nadine Chang and Maying Shen and Zuxuan Wu and Shiyi Lan and Jose M. Alvarez},
+  title   = {Generalized Trajectory Scoring for End-to-End Multimodal Planning},
+  journal = {arXiv preprint arXiv:2506.06664},
+  year    = {2025},
+  doi     = {10.48550/arXiv.2506.06664},
+  url     = {https://arxiv.org/abs/2506.06664}
+}
+
+@article{yao2026drivesuprim,
+  author    = {Wenhao Yao and Zhenxin Li and Shiyi Lan and Zi Wang and Xinglong Sun and Jose M. Alvarez and Zuxuan Wu},
+  title     = {{DriveSuprim}: Towards Precise Trajectory Selection for End-to-End Planning},
+  journal   = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {40},
+  number    = {14},
+  pages     = {11910--11918},
+  year      = {2026},
+  doi       = {10.1609/aaai.v40i14.38178},
+  url       = {https://ojs.aaai.org/index.php/AAAI/article/view/38178}
+}
+
+@inproceedings{kirby2026drivor,
+  author    = {Ellington Kirby and Alexandre Boulch and Yihong Xu and Yuan Yin and Gilles Puy and {\'E}loi Zablocki and Andrei Bursuc and Spyros Gidaris and Renaud Marlet and Florent Bartoccioni and Anh-Quan Cao and Nermin Samet and Tuan-Hung Vu and Matthieu Cord},
+  title     = {Driving on Registers},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {32058--32069},
+  year      = {2026},
+  url       = {https://openaccess.thecvf.com/content/CVPR2026/html/Kirby_Driving_on_Registers_CVPR_2026_paper.html}
+}
+
+@inproceedings{kim2026safedrive,
+  author    = {Jungho Kim and Jiyong Oh and Seunghoon Yu and Hongjae Shin and Donghyuk Kwak and Jun Won Choi},
+  title     = {{SafeDrive}: Fine-Grained Safety Reasoning for End-to-End Driving in a Sparse World},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  year      = {2026},
+  note      = {arXiv:2602.18887},
+  url       = {https://openaccess.thecvf.com/content/CVPR2026/html/Kim_SafeDrive_Fine-Grained_Safety_Reasoning_for_End-to-End_Driving_in_a_Sparse_CVPR_2026_paper.html}
+}
+
+@inproceedings{jiang2026wpt,
+  author    = {Guangfeng Jiang and Yueru Luo and Jun Liu and Yi Huang and Yiyao Zhu and Zhan Qu and Dave Zhenyu Chen and Bingbing Liu and Xu Yan},
+  title     = {{WPT}: World-to-Policy Transfer via Online World Model Distillation},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {17842--17852},
+  year      = {2026},
+  url       = {https://openaccess.thecvf.com/content/CVPR2026/html/Jiang_WPT_World-to-Policy_Transfer_via_Online_World_Model_Distillation_CVPR_2026_paper.html}
+}
+
+@article{ang2026clover,
+  author  = {Sining Ang and Yuguang Yang and Canyu Chen and Yan Wang},
+  title   = {{CLOVER}: Closed-Loop Value Estimation and Ranking for End-to-End Autonomous Driving Planning},
+  journal = {arXiv preprint arXiv:2605.15120},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2605.15120},
+  url     = {https://arxiv.org/abs/2605.15120}
+}
+
+@article{chen2026drivereward,
+  author  = {Qimao Chen and Fang Li and Yuechen Luo and Zehan Zhang and Haiyang Sun and Fangzhen Li and Bing Wang and Guang Chen and Yang Ji and Jiong Deng and Hongwei Xie and Hangjun Ye and Long Chen and Yi Zhang},
+  title   = {{DriveReward}: A Comprehensive Dataset and Generative Vision-Language Reward Model for Autonomous Driving},
+  journal = {arXiv preprint arXiv:2606.08525},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2606.08525},
+  url     = {https://arxiv.org/abs/2606.08525}
+}
+
+@article{yang2026criticvla,
+  author  = {Lijin Yang and Jianing Huang and Zhongzhan Huang and Shu Liu and Hao Yang},
+  title   = {Judge, Then Drive: A Critic-Centric Vision Language Action Framework for Autonomous Driving},
+  journal = {arXiv preprint arXiv:2604.27366},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2604.27366},
+  url     = {https://arxiv.org/abs/2604.27366}
+}
+
+@article{xu2026toad,
+  author  = {Yihong Xu and Eloi Zablocki and Yuan Yin and Elias Ramzi and Ellington Kirby and Alexandre Boulch and Matthieu Cord},
+  title   = {Test-Time Trajectory Optimization for Autonomous Driving},
+  journal = {arXiv preprint arXiv:2606.07170},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2606.07170},
+  url     = {https://arxiv.org/abs/2606.07170}
+}
+
+@inproceedings{dauner2023pdm,
+  author    = {Daniel Dauner and Marcel Hallgarten and Andreas Geiger and Kashyap Chitta},
+  title     = {Parting with Misconceptions about Learning-Based Vehicle Motion Planning},
+  booktitle = {Proceedings of the Conference on Robot Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {229},
+  pages     = {1268--1281},
+  year      = {2023},
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v229/dauner23a.html}
+}
+
+@inproceedings{zeng2019nmp,
+  author    = {Wenyuan Zeng and Shenlong Wang and Renjie Liao and Yun Chen and Bin Yang and Raquel Urtasun},
+  title     = {End-to-End Interpretable Neural Motion Planner},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {8660--8669},
+  year      = {2019},
+  url       = {https://openaccess.thecvf.com/content_CVPR_2019/html/Zeng_End-To-End_Interpretable_Neural_Motion_Planner_CVPR_2019_paper.html}
+}
+
+% -----------------------------------------------------------------------------
+% Frozen representations and driving-model internal states
+% -----------------------------------------------------------------------------
+
+@article{alain2016probes,
+  author  = {Guillaume Alain and Yoshua Bengio},
+  title   = {Understanding Intermediate Layers Using Linear Classifier Probes},
+  journal = {arXiv preprint arXiv:1610.01644},
+  year    = {2016},
+  doi     = {10.48550/arXiv.1610.01644},
+  url     = {https://arxiv.org/abs/1610.01644}
+}
+
+@article{lu2022fpt,
+  author    = {Kevin Lu and Aditya Grover and Pieter Abbeel and Igor Mordatch},
+  title     = {Frozen Pretrained Transformers as Universal Computation Engines},
+  journal   = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {36},
+  number    = {7},
+  pages     = {7628--7636},
+  year      = {2022},
+  doi       = {10.1609/aaai.v36i7.20729},
+  url       = {https://ojs.aaai.org/index.php/AAAI/article/view/20729}
+}
+
+@article{ling2026blue,
+  author  = {George Ling and Lijin Yang and Hao Yang and Zhongzhan Huang},
+  title   = {{BLUE}: Toward Better Language Use in Efficient Vision-Language-Action Models for Autonomous Driving},
+  journal = {arXiv preprint arXiv:2606.08684},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2606.08684},
+  url     = {https://arxiv.org/abs/2606.08684}
+}
+
+@article{babu2026planningtoken,
+  author  = {Harisankar Babu and Benjamin Coors and Christopher Lang and Hendrik Berkemeyer and Tamim Asfour and Simon Foell},
+  title   = {Depth-Wise Probing and Pruning of the Planning Token in a Driving Vision-Language-Action Model},
+  journal = {arXiv preprint arXiv:2608.07361},
+  year    = {2026},
+  note    = {Accepted at the 6th DriveX Workshop, ECCV 2026},
+  doi     = {10.48550/arXiv.2608.07361},
+  url     = {https://arxiv.org/abs/2608.07361}
+}
+
+@article{yang2026lwdrive,
+  author  = {Chen Yang and Yuhao Wei and Ze Xu and Ziheng Zou and Shuang Liang and Delin Ouyang and Lingfeng Qi and Jie Li and Guofa Li},
+  title   = {{LWDrive}: Layer-Wise World-Model-Guided Vision-Language Model Planning for Autonomous Driving},
+  journal = {arXiv preprint arXiv:2606.29879},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2606.29879},
+  url     = {https://arxiv.org/abs/2606.29879}
+}
+
+% -----------------------------------------------------------------------------
+% Multimodal prediction and closed-loop benchmarks
+% -----------------------------------------------------------------------------
 
 @inproceedings{chai2019multipath,
   author    = {Yuning Chai and Benjamin Sapp and Mayank Bansal and Dragomir Anguelov},
   title     = {Multi{P}ath: Multiple Probabilistic Anchor Trajectory Hypotheses for Behavior Prediction},
-  booktitle = {CoRL},
-  year      = {2019}
+  booktitle = {Proceedings of the Conference on Robot Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {100},
+  pages     = {86--99},
+  year      = {2020},
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v100/chai20a.html}
 }
 
-@article{alain2016probes,
-  author  = {Guillaume Alain and Yoshua Bengio},
-  title   = {Understanding intermediate layers using linear classifier probes},
-  journal = {arXiv:1610.01644},
-  year    = {2016}
+@inproceedings{ettinger2021waymo,
+  author    = {Scott Ettinger and Shuyang Cheng and Benjamin Caine and Chenxi Liu and Hang Zhao and Sabeek Pradhan and Yuning Chai and Benjamin Sapp and Charles R. Qi and Yin Zhou and Zoey Yang and Aurelien Chouard and Pei Sun and Jiquan Ngiam and Vijay Vasudevan and Alexander McCauley and Jonathon Shlens and Dragomir Anguelov},
+  title     = {Large Scale Interactive Motion Forecasting for Autonomous Driving: The {Waymo Open Motion Dataset}},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages     = {9710--9719},
+  year      = {2021},
+  url       = {https://openaccess.thecvf.com/content/ICCV2021/html/Ettinger_Large_Scale_Interactive_Motion_Forecasting_for_Autonomous_Driving_The_Waymo_ICCV_2021_paper.html}
 }
 
-% TODO-VERIFY exact venue (AAAI 2022) and title form
-@inproceedings{lu2022fpt,
-  author    = {Kevin Lu and Aditya Grover and Pieter Abbeel and Igor Mordatch},
-  title     = {Frozen Pretrained Transformers as Universal Computation Engines},
-  booktitle = {AAAI},
-  year      = {2022}
+@article{caesar2021nuplan,
+  author  = {Holger Caesar and Juraj Kabzan and Kok Seang Tan and Whye Kit Fong and Eric Wolff and Alex Lang and Luke Fletcher and Oscar Beijbom and Sammy Omari},
+  title   = {nu{P}lan: A Closed-Loop {ML}-Based Planning Benchmark for Autonomous Vehicles},
+  journal = {arXiv preprint arXiv:2106.11810},
+  year    = {2021},
+  doi     = {10.48550/arXiv.2106.11810},
+  url     = {https://arxiv.org/abs/2106.11810}
 }
 
-% TODO-VERIFY venue (CoRL 2024)
-@inproceedings{tian2024drivevlm,
-  author    = {Xiaoyu Tian and Junru Gu and Bailin Li and Yicheng Liu and Yang Wang and Zhiyong Zhao and Kun Zhan and Peng Jia and Xianpeng Lang and Hang Zhao},
-  title     = {Drive{VLM}: The Convergence of Autonomous Driving and Large Vision-Language Models},
-  booktitle = {CoRL},
-  year      = {2024}
+@inproceedings{dauner2024navsim,
+  author    = {Daniel Dauner and Marcel Hallgarten and Tianyu Li and Xinshuo Weng and Zhiyu Huang and Zetong Yang and Hongyang Li and Igor Gilitschenski and Boris Ivanovic and Marco Pavone and Andreas Geiger and Kashyap Chitta},
+  title     = {{NAVSIM}: Data-Driven Non-Reactive Autonomous Vehicle Simulation and Benchmarking},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {37},
+  pages     = {28706--28719},
+  year      = {2024},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2024/hash/32780b5039e61df8ac1ee023266bc0ab-Abstract-Datasets_and_Benchmarks_Track.html}
 }
 
-% TODO-VERIFY authors list
-@article{hwang2024emma,
-  author  = {Jyh-Jing Hwang and Runsheng Xu and Hubert Lin and Wei-Chih Hung and Jingwei Ji and Kristy Choi and Di Huang and Tong He and Paul Covington and Benjamin Sapp and Yin Zhou and James Guo and Dragomir Anguelov and Mingxing Tan},
-  title   = {{EMMA}: End-to-End Multimodal Model for Autonomous Driving},
-  journal = {arXiv:2410.23262},
-  year    = {2024}
+@inproceedings{jia2024bench2drive,
+  author    = {Xiaosong Jia and Zhenjie Yang and Qifeng Li and Zhiyuan Zhang and Junchi Yan},
+  title     = {Bench2Drive: Towards Multi-Ability Benchmarking of Closed-Loop End-to-End Autonomous Driving},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {37},
+  pages     = {819--844},
+  year      = {2024},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2024/hash/01dbb2b0528da9e68713df165b0cd93b-Abstract-Datasets_and_Benchmarks_Track.html}
 }
 
-% TODO-VERIFY: public citation for the frozen 10B driving VLA generator
-% (Alpamayo-1.5). Replace with the correct public reference or an anonymized
-% technical-report citation per the blind-review strategy.
-@misc{alpamayo2025,
-  author = {{NVIDIA}},
-  title  = {Alpamayo: A Vision-Language-Action Model for Autonomous Driving},
-  year   = {2025},
-  note   = {TODO-VERIFY public reference}
-}
+% -----------------------------------------------------------------------------
+% World models
+% -----------------------------------------------------------------------------
 
 @article{ha2018worldmodels,
   author  = {David Ha and J{\"u}rgen Schmidhuber},
   title   = {World Models},
-  journal = {arXiv:1803.10122},
-  year    = {2018}
+  journal = {arXiv preprint arXiv:1803.10122},
+  year    = {2018},
+  doi     = {10.48550/arXiv.1803.10122},
+  url     = {https://arxiv.org/abs/1803.10122}
 }
 
-% TODO-VERIFY arXiv id
 @article{hu2023gaia,
   author  = {Anthony Hu and Lloyd Russell and Hudson Yeo and Zak Murez and George Fedoseev and Alex Kendall and Jamie Shotton and Gianluca Corrado},
   title   = {{GAIA}-1: A Generative World Model for Autonomous Driving},
-  journal = {arXiv:2309.17080},
-  year    = {2023}
+  journal = {arXiv preprint arXiv:2309.17080},
+  year    = {2023},
+  doi     = {10.48550/arXiv.2309.17080},
+  url     = {https://arxiv.org/abs/2309.17080}
 }
+
+% -----------------------------------------------------------------------------
+% Evaluation rigor and statistical methodology
+% -----------------------------------------------------------------------------
 
 @book{efron1994bootstrap,
   author    = {Bradley Efron and Robert J. Tibshirani},
   title     = {An Introduction to the Bootstrap},
   publisher = {Chapman \& Hall/CRC},
-  year      = {1994}
+  year      = {1994},
+  doi       = {10.1201/9780429246593}
 }
 
-% TODO-VERIFY venue/year (NAACL 2021 workshop?)
 @inproceedings{vanmiltenburg2021preregistering,
   author    = {Emiel van Miltenburg and Chris van der Lee and Emiel Krahmer},
   title     = {Preregistering {NLP} Research},
-  booktitle = {NAACL},
-  year      = {2021}
+  booktitle = {Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  pages     = {613--623},
+  year      = {2021},
+  doi       = {10.18653/v1/2021.naacl-main.51},
+  url       = {https://aclanthology.org/2021.naacl-main.51/}
 }
 
-% TODO-VERIFY title/venue (NeurIPS 2019)
 @inproceedings{raff2019reproducibility,
   author    = {Edward Raff},
   title     = {A Step Toward Quantifying Independently Reproducible Machine Learning Research},
-  booktitle = {NeurIPS},
-  year      = {2019}
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {32},
+  pages     = {5486--5496},
+  year      = {2019},
+  url       = {https://proceedings.neurips.cc/paper/2019/hash/c429429bf1f2af051f2021dc92a8ebea-Abstract.html}
 }
 
-% TODO-VERIFY venue (NeurIPS 2024 D&B)
-@inproceedings{jia2024bench2drive,
-  author    = {Xiaosong Jia and Zhenjie Yang and Qifeng Li and Zhiyuan Zhang and Junchi Yan},
-  title     = {Bench2Drive: Towards Multi-Ability Benchmarking of Closed-Loop End-To-End Autonomous Driving},
-  booktitle = {NeurIPS Datasets and Benchmarks},
-  year      = {2024}
+@article{hofman2023preregistration,
+  author  = {Jake M. Hofman and Angelos Chatzimparmpas and Amit Sharma and Duncan J. Watts and Jessica Hullman},
+  title   = {Preregistration as Code: Machine-Readable Hypotheses in Computational Science},
+  journal = {arXiv preprint arXiv:2311.18807},
+  year    = {2023},
+  doi     = {10.48550/arXiv.2311.18807},
+  url     = {https://arxiv.org/abs/2311.18807}
+}
+
+@inproceedings{card2020power,
+  author    = {Dallas Card and Peter Henderson and Urvashi Khandelwal and Robin Jia and Kyle Mahowald and Dan Jurafsky},
+  title     = {With Little Power Comes Great Responsibility},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing},
+  pages     = {9263--9274},
+  year      = {2020},
+  doi       = {10.18653/v1/2020.emnlp-main.745},
+  url       = {https://aclanthology.org/2020.emnlp-main.745/}
+}
+
+@article{field2007clusterbootstrap,
+  author  = {Cameron A. Field and Alan H. Welsh},
+  title   = {Bootstrapping Clustered Data},
+  journal = {Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
+  volume  = {69},
+  number  = {3},
+  pages   = {369--390},
+  year    = {2007},
+  doi     = {10.1111/j.1467-9868.2007.00593.x}
 }

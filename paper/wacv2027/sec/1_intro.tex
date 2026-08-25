@@ -1,54 +1,38 @@
 \section{Introduction}
 \label{sec:intro}
 
-Modern end-to-end driving stacks are multi-modal by construction: given a scene, the planner proposes $K$ candidate trajectories, and the vehicle executes one of them.
-The field's dominant reporting convention, minADE@$K$ and its closed-loop analogues, scores the \emph{best} of the $K$ candidates---implicitly assuming an oracle selector that deployment does not have.
-What the vehicle actually achieves is set by the candidate it \emph{selects}; the difference between the oracle's outcome and the selected outcome is the \emph{selected regret}, and it is the quantity this paper measures, models, and reduces.
-Under a strong 10B-parameter driving VLA generator with $K{=}8$ sampled candidates, we find the selected regret of a trained geometry-only selector is \AbsLegacyKEightRegret{} official-score points per scene (scale $[0,1]$), against an oracle gap of zero---small in absolute terms, but persistent, and invisible to minADE-style reporting.
+Reasoning-based vision-language-action (VLA) models are becoming the planning core of modern autonomous-driving stacks~\cite{tian2024drivevlm,hwang2024emma,alpamayo2025}.
+Given a scene and a driving prompt, such a model proposes several candidate trajectories, and the vehicle executes one of them.
+The field's dominant reporting convention, minADE@$K$ and its closed-loop analogues, scores the best of the $K$ candidates and thereby assumes an oracle selector that deployment does not have.
+What the vehicle actually experiences is decided by the candidate it commits to; the difference between the best available candidate and the executed one is the selected regret, and for a safety-critical system it is precisely this pre-execution decision that deserves an audit.
+In practice, the critical question is not whether the generator could have driven safely, but whether the trajectory it is about to execute will.
 
-One route to closing this gap is \emph{explicit imagination}.
-WoTE~\cite{li2025wote} trains a BEV world model alongside the planner, autoregressively imagines each candidate's future BEV state, and scores the imagined futures with imitation and simulation-based submetric rewards.
-This buys online evaluation at the cost of a purpose-trained world model, per-candidate rollout compute at inference time, and supervision plumbed from simulator submetrics.
+Existing online trajectory evaluators answer this question with explicit imagination.
+WoTE~\cite{li2025wote} trains a BEV world model alongside the planner, autoregressively imagines each candidate's future state, and scores the imagined futures with imitation and simulation-derived rewards.
+This design falls short in two key respects for a pre-execution audit of a large driving VLA.
+First, it requires a purpose-trained world model and per-candidate rollouts at inference time, a cost that grows with the number of candidates and competes with the generator for the same latency budget.
+Second, it treats the generator as a black box: the imagination is computed from scratch, even though a VLA trained to produce good trajectories must already represent internally where hazards are, which maneuvers are viable, and how the scene constrains them.
+To bridge this gap, we ask whether the consequence knowledge a safety audit needs is already present in the generator's own forward pass, in a form that a small head can read without any rollout.
 
-This paper asks the opposite question: \emph{does the generator's own forward pass already contain the scene knowledge a selector needs?}
-The intuition is that a driving VLA trained to produce good trajectories must internally represent where hazards are, which maneuvers are viable, and how the scene constrains them---an \emph{amortized} form of the same consequence knowledge a world model would compute online.
-If that knowledge is readable from activations the planner computes anyway, online evaluation becomes representation \emph{reuse}: zero VLA training, zero inference-time rollouts, and a selector head small enough to be free at deployment.
+To this end, we introduce \headname{}, a pre-execution safety auditor for reasoning-based driving VLAs (\cref{fig:arch}).
+\headname{} captures the final-layer hidden state of the frozen VLA's prompt prefill during the same forward pass that generates the candidates, and reads only its last token, a byproduct of generation that costs nothing to obtain.
+A lightweight action-conditioned consequence head then scores each candidate independently: it embeds the candidate trajectory, queries the scene representation through a single cross-attention block, and predicts the candidate's closed-loop official score, decomposed into a group-level difficulty term and a bounded per-candidate residual so that only the latter drives the audit.
+Consequence heads for future ego motion, progress, collision, and off-road events supervise the representation during training but are deleted at deployment; the audited score is bit-identical without them.
+Consequences thus shape the auditor's weights during training, but nothing is simulated or predicted at decision time.
 
-Concretely, we capture the final-layer hidden states of the frozen VLA's prompt prefill \emph{during the same forward pass that generates the candidates}---the candidates and the representation are provably co-produced (the pooled scene vector is bit-exactly the last row of the captured sequence, hash-verified at capture time; \cref{sec:capture}).
-A \EffParams-parameter decomposed value head (\cref{sec:head}) reads this representation and scores each candidate independently in \EffLtMedianMs~ms for all $K{=}8$, with \EffLtMemMb~MB peak incremental memory.
+Because the effects at stake are small relative to a strong generator, we treat the evaluation design as part of the contribution.
+The reused representation is tied to the candidate-generating forward pass by capture-time hashes, so representation and candidates are provably co-produced.
+Every confirmatory study is preregistered with frozen decision gates before outcomes exist, evaluated on scenes no model in the study had consumed, and analyzed with paired scene bootstrap intervals; the final comparison against a trained geometric auditor is sized in advance to detect the pilot effect.
+All numbers reported in this paper are read directly from hash-locked analysis records.
 
-Three findings structure our results.
-\textbf{First}, the frozen representation carries a real, scene-specific, causally verified selection signal: on \nScenes{} prospectively frozen, never-before-touched scenes, the representation-informed head beats a parameter-matched scene-blind control on selected regret (\MThreeKEightRegretCI) and tie-aware top-1 agreement (\MThreeKEightTopOneCI), while wrong-scene substitution and representation zeroing degrade selection (\cref{sec:res-signal}).
-\textbf{Second}, and counterintuitively, \emph{more context hurts}: a matched-capacity reader given the full $3{,}086\times4{,}096$ prefill sequence is CI-supported \emph{worse} than the same architecture reading only the last token (regret \MOneKEightRegretCI, top-1 \MOneKEightTopOneCI; \cref{sec:res-onetoken}).
-The generator has already summarized the scene into its terminal prefill state; re-reading its full working memory dilutes the signal under a fixed parameter budget.
-\textbf{Third}, effects of this size demand statistical care the area rarely applies.
-Every confirmatory study in this paper was preregistered with frozen decision gates before outcomes existed; endpoints use paired scene bootstrap confidence intervals; cohorts advance on a ladder from development scenes to prospectively frozen untouched scenes to a sealed confirmation set that is never opened until a winner is frozen; and every number in this paper is machine-read from hash-locked result records (\cref{sec:program}).
-\iffnonedone\else
-The program culminates in a comparison against the trained geometry incumbent that is \emph{adequately powered by design}: the sample size ($N=\FnNTotal$ scenes) was derived from the locked pilot effect (MDE $\FnMde$, paired SD $\FnSdPaired$) to reach $1-\beta=\FnPowerAchieved$ at two-sided $\alpha=0.05$.
-\fi
-
-Our contributions are:
+We validate \headname{} on a 10B driving VLA in closed-loop simulation.
+Our analysis shows that the frozen last token carries a scene-specific audit signal: on prospectively frozen, never-before-touched scenes, \headname{} lowers selected regret and raises top-1 agreement over a scene-blind auditor of identical architecture and capacity, and the gain disappears when the representation is swapped for another scene's or zeroed.
+Notably, giving the same auditor the full 3{,}086-token prefill sequence makes it worse than reading the last token alone, under a matched parameter budget.
+Against a trained trajectory-geometry auditor, an adequately powered comparison on 525 scenes shows that the reused representation adds information but does not by itself displace the tuned geometric baseline, a boundary result that delimits when representation reuse pays.
+The deployed auditor has 1.7M parameters and scores all candidates in about one millisecond.
+Our contributions are three-fold:
 \begin{itemize}
-  \item \textbf{C1 --- Same-prefill capture and an open evaluation program.} A capture protocol that provably ties the reused representation to the exact forward pass that produced the candidates, embedded in an evaluation design (preregistration, frozen gates, cohort ladder, causal ablations, sealed confirmation) that we argue should become standard for selector claims (\cref{sec:capture,sec:program}).
-  \item \textbf{C2 --- Positive result.} The frozen VLA's last prefill token supports scene-specific trajectory selection with CI-supported gains on both primary endpoints, replicated prospectively on untouched scenes and causally verified by ablation (\cref{sec:res-signal}).
-  \item \textbf{C3 --- Negative result.} Under matched capacity, the full prefill sequence is CI-supported worse than its last token alone---a ``more context hurts'' finding with direct architectural consequences for representation-reuse selectors (\cref{sec:res-onetoken}).
-  \item \textbf{C4 --- Powered incumbent verdict.}
-  \iffnonedone
-    \iffnonepass
-      At $1-\beta=0.80$ power, the representation-based selector surpasses the tuned trajectory-geometry incumbent on the promoting endpoint with preregistered non-inferiority on the others (\cref{sec:res-incumbent}).
-    \else
-      At $1-\beta=0.80$ power, the representation-based selector does \emph{not} displace the tuned trajectory-geometry incumbent; we report this as a clean, adequately powered boundary on when representation reuse pays, together with the conditions under which the representation \emph{does} add value (\cref{sec:res-incumbent}).
-    \fi
-  \else
-    An adequately powered ($N=\FnNTotal$, $1-\beta=0.80$), preregistered verdict on whether the reused representation displaces a tuned trajectory-geometry incumbent (\cref{sec:res-incumbent}). \todo{FN1 lands $\sim$Aug 10; both outcome branches are pre-written.}
-  \fi
+  \item We introduce pre-execution safety auditing of driving VLAs as a frozen-representation readout problem, and present \headname{}, an action-conditioned consequence auditor that reads the frozen generator's own prefill state with zero VLA training and zero inference-time rollouts.
+  \item We present a same-prefill capture protocol that ties the reused representation bit-exactly to the candidate-generating forward pass, together with a preregistered, prospectively replicated evaluation design that we argue should become standard for auditor claims.
+  \item We show that the last prefill token carries a causally verified, scene-specific audit signal, that the full sequence is worse than its last token under matched capacity, and, at adequate statistical power, where representation reuse does and does not displace a tuned geometric auditor.
 \end{itemize}
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{figs/fig1_teaser.pdf}
-  \caption{\textbf{Two routes to online trajectory evaluation.}
-  \emph{Top (explicit imagination, WoTE~\cite{li2025wote}):} a purpose-trained BEV world model autoregressively rolls out each candidate's future, then scores the imagined states.
-  \emph{Bottom (ours, amortized):} the frozen driving VLA's own prompt prefill---computed anyway to generate the candidates---already summarizes the scene; its last hidden token feeds a \EffParams-parameter value head that scores all $K{=}8$ candidates in \EffLtMedianMs\,ms with zero inference-time rollouts and zero VLA training.}
-  \label{fig:teaser}
-\end{figure}
