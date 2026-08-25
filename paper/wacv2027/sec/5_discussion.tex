@@ -1,0 +1,27 @@
+\section{Discussion and Limitations}
+\label{sec:discussion}
+
+\paragraph{Internal benchmark, by choice.}
+All results are measured in \simname{} against its official closed-loop score; they are not comparable to NavSim, nuPlan, or Bench2Drive leaderboards~\cite{dauner2024navsim,caesar2021nuplan,jia2024bench2drive}, and we claim no state of the art.
+The trade was deliberate: closed-loop official scoring of every candidate, not just the executed one, is what makes selected regret directly measurable, and a controlled internal environment is what makes prospective freezing, sealed cohorts, and bit-exact provenance enforceable.
+We give up leaderboard placement and buy inferential validity; porting the protocol to a public closed-loop benchmark is the obvious next step, and the capture contract (\cref{sec:capture}) is simulator-agnostic.
+
+\paragraph{Small absolute effects are the honest scale.}
+A regret delta of $-0.0069$ on a $[0,1]$ score is small.
+That is what audit headroom under a strong generator at $K{=}8$ is: the incumbent already operates near the oracle on most groups, and the remaining slack concentrates in a minority of scenes.
+This is precisely why the paper leans on intervals, preregistration, and a powered design rather than point estimates; at this effect scale, standard practice can produce any conclusion one likes.
+We regard the evidence standard as load-bearing for the claims, not as ornamentation.
+
+\paragraph{Scope.}
+One generator (\vlaname, 10B), one simulator, one candidate regime ($K{=}8$ sampled; WoTE-style designs use up to 256 anchors), one representation site (final-layer prefill).
+The last-token result is a statement about generators built on an autoregressive reasoning VLM, where the prefill terminus is the state from which emission begins; in \vlaname{} a flow-matching trajectory decoder consumes that state (\cref{fig:arch}a), and transfer to architectures with no comparable terminus, such as end-to-end diffusion planners without a reasoning prefill, is untested.
+Scenes are simulator-native; no real-world driving data is touched.
+
+\paragraph{From zero rollouts to online imagination.}
+Our zero-rollout endpoint and WoTE's online imagination bracket a spectrum whose middle is unexplored: scoring a predicted future (a single imagined step), consuming the auxiliary heads at inference, or distilling an explicit evaluator into a prefill reader.
+The deletion test (\cref{sec:head}) gives the spectrum a crisp operational coordinate: how much of the auditor's decision changes when its forward-looking components are removed at inference.
+Mapping audit quality along that coordinate, and testing whether the last-token summary remains sufficient as $K$ grows toward anchor-set scale, is where we would go next.
+
+\paragraph{Conclusion.}
+We introduced \headname{}, a pre-execution safety auditor that reads the consequence knowledge a frozen driving VLA has already computed while proposing its candidates, and showed under a preregistered, prospectively replicated protocol that a single prefill token carries a causally verified scene-specific audit signal, that the full sequence is worse than its last token, and, at adequate statistical power, where representation reuse does and does not displace a tuned geometric auditor.
+Our results suggest that safety auditing of driving VLAs need not be paid for with online imagination: much of what an audit needs is already present in the generator's own forward pass.

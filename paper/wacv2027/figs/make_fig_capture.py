@@ -1,62 +1,72 @@
 #!/usr/bin/env python3
-"""Capture & provenance figure (single column, Sec. 4.2).
+"""Same-prefill capture figure (single column, Sec. 3.2).
 
-The same-prefill capture contract: one predict() call, exactly-one-prefill
-asserted, h = H[-1] bit-exact, and the hash chain from capture to the
-analysis record.
+One production predict() call, one forward pass, two products: the K=8
+sampled candidates and the prefill hidden states H. The auditor reads only
+the last row h = H[-1], a free byproduct of generation. (Provenance/hash
+details live in the text, not in this figure.)
 """
+import fancy
 import style
 from style import (BLUE, BLUE_EDGE, BLUE_FILL, FAINT, INK, MUTED,
                    NEUTRAL_EDGE, arrow, box, canvas)
 
+W_IN, H_IN = style.SINGLE_COL, 2.10
+AR = (W_IN / H_IN) * 1.0  # snowflake aspect correction
+
 
 def main():
     style.setup()
-    fig, ax = canvas(style.SINGLE_COL, 2.30)
+    fig, ax = canvas(W_IN, H_IN)
 
-    # container: one predict() call
-    box(ax, 1, 36, 98, 60, "", fc="#fbfaf8", ec=FAINT, rounding=2.0)
-    ax.text(4, 91.5, "one production predict( ) call — exactly-one-prefill asserted",
-            fontsize=6.0, color=MUTED, va="center", style="italic")
+    # container: one production call
+    box(ax, 1, 2, 98, 96, "", fc="#fbfaf8", ec=FAINT, rounding=2.0)
+    ax.text(4, 93.5, "one production predict( ) call", fontsize=6.0,
+            color=MUTED, va="center", style="italic")
 
-    # prompt prefill token strip
-    for i in range(14):
-        box(ax, 5 + i * 3.75, 78, 3.0, 6.0, "", fc="#e7e5df",
-            ec=NEUTRAL_EDGE, lw=0.4, rounding=0.5)
-    ax.text(5, 73.2, "prompt prefill · 3,086 tokens", fontsize=6.0,
+    # input: prompt prefill token strip (last cell highlighted)
+    last_cx = fancy.token_strip(ax, 6, 77, 42, 5.4, n=15)
+    ax.text(6, 71.6, "prompt prefill · 3,086 tokens", fontsize=6.0,
             color=MUTED, va="center")
-    arrow(ax, 60, 81, 70, 81)
-    box(ax, 71, 74, 25, 14, "sample $K{=}8$\ncandidates", fs=6.0)
 
-    # hidden states H, last row highlighted
-    box(ax, 5, 44, 50, 24,
-        "$H\\in\\mathbb{R}^{3086\\times4096}$ — final-layer\nhidden states (post final norm)",
-        fc="#eef3fa", ec=NEUTRAL_EDGE, fs=6.0)
-    arrow(ax, 30, 72.0, 30, 68.6)
-    box(ax, 5, 44, 50, 4.6, "", fc=BLUE_FILL, ec=BLUE_EDGE, lw=0.9,
+    # frozen VLA
+    fancy.vgrad(ax, 62, 69, 30, 19, "#dce9fb", "#9ec5f4", ec="#5598e7",
+                lw=0.7, rounding=1.6, shadow=True)
+    ax.text(77, 78.5, "frozen driving\nVLA (10B)", ha="center", va="center",
+            fontsize=6.4, color=INK, zorder=5)
+    fancy.snowflake(ax, 91.6, 87.2, r=1.45, ar=AR)
+    arrow(ax, 50.5, 80, 61, 79.5)
+
+    # the split: one forward pass, two products
+    ax.text(64, 64.5, "one forward pass · two products", fontsize=5.6,
+            color=MUTED, ha="center", va="center", style="italic")
+
+    # product 1 (right): sampled candidates
+    fancy.road(ax, 70, 27, 24, 29, n=8)
+    ax.text(82, 21.0, "$K{=}8$ sampled\ncandidates", fontsize=6.0, color=INK,
+            ha="center", va="top")
+    arrow(ax, 81, 68.3, 82, 57.5)
+
+    # product 2 (left): hidden states H with the last row highlighted
+    box(ax, 6, 30, 48, 27, "", fc="#eef3fa", ec=NEUTRAL_EDGE)
+    ax.text(30, 49.5, "final-layer hidden states", fontsize=6.0, color=INK,
+            ha="center", va="center", zorder=5)
+    ax.text(30, 44.2, r"$H \in \mathbb{R}^{3086\times4096}$", fontsize=6.4,
+            color=INK, ha="center", va="center", zorder=5)
+    for k in range(3):
+        yy = 40.0 - k * 2.1
+        ax.plot([7.5, 52.5], [yy, yy], color="#c9d6e8", lw=0.5, zorder=4)
+    box(ax, 6, 30, 48, 4.0, "", fc=BLUE_FILL, ec=BLUE_EDGE, lw=0.9,
         rounding=0.8)
-    ax.text(58.5, 46.5, "$h = H[-1]$", fontsize=6.8, color=BLUE,
-            va="center", fontweight="bold")
-    ax.text(58.5, 41.2, "bit-exact, sha-verified · 519/519 groups",
-            fontsize=5.6, color=MUTED, va="center")
-    arrow(ax, 83.5, 73.6, 76, 50.5, color=FAINT,
-          connectionstyle="arc3,rad=-0.12")
-    ax.text(86, 62, "same\nforward pass", fontsize=5.6, color=MUTED,
-            ha="left", va="center", style="italic")
+    arrow(ax, 67, 68.5, 36, 58.0, connectionstyle="arc3,rad=0.12")
 
-    # provenance chain
-    labels = ["capture\nhashes", "training\ntables", "locked\npredictions",
-              "analysis\nrecord"]
-    for i, lab in enumerate(labels):
-        x = 1 + i * 25.5
-        box(ax, x, 9, 22, 16, lab, fs=5.9, fc="#f6f5f2")
-        ax.text(x + 1.8, 22.6, "sha", fontsize=4.8, color=BLUE,
-                va="center", fontweight="bold")
-        if i:
-            arrow(ax, x - 3.1, 17, x - 0.4, 17)
-    arrow(ax, 28, 43.6, 12, 26, connectionstyle="arc3,rad=0.15")
-    ax.text(1, 2.5, "provenance chain — every hop hash-verified before analysis",
-            fontsize=5.9, color=MUTED, va="center", style="italic")
+    # extraction: h = H[-1]
+    arrow(ax, 22, 29.4, 22, 19.8, color=BLUE, lw=1.1)
+    box(ax, 12, 11.5, 20, 5.2, "", fc=BLUE, ec="white", lw=0.7, rounding=0.9)
+    ax.text(35, 14.4, "$h = H[-1]$", fontsize=7.0, color=BLUE,
+            va="center", fontweight="bold")
+    ax.text(35, 8.6, "the only representation the auditor reads · free",
+            fontsize=5.6, color=MUTED, va="center")
 
     style.save(fig, "fig_capture")
 

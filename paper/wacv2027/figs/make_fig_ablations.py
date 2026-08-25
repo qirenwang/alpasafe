@@ -62,7 +62,7 @@ def main():
              "pale = CI crosses 0",
              fontsize=5.0, color=MUTED, ha="left", va="center")
 
-    style.save(fig, "fig4_ablations")
+    style.save(fig, "fig_ablations")
 
 
 if __name__ == "__main__":
